@@ -1,0 +1,15 @@
+spring:
+
+  # Import configuration with secrets and settings
+  config:
+    import: application-secrets.yml
+
+  # Hibernate Settings
+  jpa:
+    hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      show_sql: true
+
+  #liquibase
+  liquibase:
+    changelog: db/changelog/V1__Default_Models.sql

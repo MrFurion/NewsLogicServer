@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  postgres-db:
+    image: postgres:15
+    container_name: postgres_db_clevertec_service
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: NewsLogicServer
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
