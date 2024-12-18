@@ -1,5 +1,6 @@
 package by.clevertec.newslogicserver;
 
+import by.clevertec.newslogicserver.env.EnvLoader;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -7,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class NewsLogicServerApplication {
 
 	public static void main(String[] args) {
+		EnvLoader.loadEnv();
 		SpringApplication.run(NewsLogicServerApplication.class, args);
 	}
 }
