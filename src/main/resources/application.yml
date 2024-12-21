@@ -1,8 +1,8 @@
 spring:
 
   # Import configuration with secrets and settings
-  config:
-    import: application-secrets.yml
+  profiles:
+    active: dev
 
   # Hibernate Settings
   jpa:

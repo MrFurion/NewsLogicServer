@@ -1,5 +1,8 @@
 package by.clevertec.services;
 
+import by.clevertec.dto.request.NewsDtoRequest;
+import by.clevertec.dto.request.NewsDtoRequestUpdate;
+import by.clevertec.dto.response.NewsDtoResponse;
 import by.clevertec.models.News;
 
 import java.util.UUID;
@@ -22,7 +25,28 @@ public interface NewsService {
      * @return News
      */
     News findById(UUID id);
-    void create();
-    void update();
-    void delete();
+
+    /**
+     * Create new news with use data of NewsDtoRequest.
+     *
+     * @param newsDtoRequest data of newsDtoRequest
+     * @return NewsDtoResponse
+     */
+    NewsDtoResponse create(NewsDtoRequest newsDtoRequest);
+
+    /**
+     * Update news by its id with use NewsDtoRequest
+     *
+     * @param newsDtoRequestUpdate data of newsDataRequest
+     * @param uuid id of news
+     * @return update news with use NewsDtoResponse
+     */
+    NewsDtoResponse update(NewsDtoRequestUpdate newsDtoRequestUpdate, UUID uuid);
+
+    /**
+     * Delete news by its id.
+     *
+     * @param uuid id of news
+     */
+    void delete(UUID uuid);
 }

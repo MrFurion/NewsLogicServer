@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ApiLogicServerApplicetion {
+public class ApiLogicServerApplication {
     public static void main(String[] args) {
-        SpringApplication.run(ApiLogicServerApplicetion.class, args);
+        SpringApplication.run(ApiLogicServerApplication.class, args);
     }
 }
