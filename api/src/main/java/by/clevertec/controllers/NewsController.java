@@ -1,6 +1,7 @@
 package by.clevertec.controllers;
 
 import by.clevertec.dto.request.NewsDtoRequest;
+import by.clevertec.dto.request.NewsDtoRequestUpdate;
 import by.clevertec.dto.response.NewsDtoResponse;
 import by.clevertec.models.News;
 import by.clevertec.services.NewsService;
@@ -35,23 +36,22 @@ public class NewsController {
     @PostMapping
     public ResponseEntity<String> createNews(@Validated @RequestBody NewsDtoRequest newsDtoRequest) {
         NewsDtoResponse newsDtoResponse = newsService.create(newsDtoRequest);
-        return ResponseEntity.created(URI.create("/news")).body("News created successfully with id : "
-                + newsDtoResponse.getId());
+        URI location = URI.create("/news/" + newsDtoResponse.getId());
+        return ResponseEntity.created(location).body("News created successfully with id: " + newsDtoResponse.getId());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<NewsDtoResponse> updateNews(@Validated @RequestBody NewsDtoRequest newsDtoRequest,
+    public ResponseEntity<NewsDtoResponse> updateNews(@Validated @RequestBody NewsDtoRequestUpdate newsDtoRequestUpdate,
                                                       @PathVariable UUID id) {
 
-        //TODO нужно создать и использовать NewsDtoRequestUpdate
-
-        NewsDtoResponse  newsDtoResponse = newsService.update(newsDtoRequest, id);
+        NewsDtoResponse newsDtoResponse = newsService.update(newsDtoRequestUpdate, id);
         return ResponseEntity.ok(newsDtoResponse);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteNews(@PathVariable UUID id) {
         newsService.delete(id);
-        return ResponseEntity.ok("News deleted successfully with id : " + id);
+        return ResponseEntity.noContent()
+                .header("X-Message", "News deleted successfully with id: " + id).build();
     }
 }

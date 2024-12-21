@@ -1,6 +1,7 @@
 package by.clevertec.services.impl;
 
 import by.clevertec.dto.request.NewsDtoRequest;
+import by.clevertec.dto.request.NewsDtoRequestUpdate;
 import by.clevertec.dto.response.NewsDtoResponse;
 import by.clevertec.exception.NewsNotFoundException;
 import by.clevertec.mapper.NewsMapper;
@@ -17,7 +18,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@Transactional(readOnly=true)
+@Transactional(readOnly = true)
 @Slf4j
 @RequiredArgsConstructor
 public class NewsServiceImpl implements NewsService {
@@ -36,21 +37,23 @@ public class NewsServiceImpl implements NewsService {
         News news = newsMapper.toNews(newsDtoRequest);
         news.setTime(Instant.now());
         newsRepository.save(news);
+        log.info("News created successfully at time: {}", news.getTime());
         return newsMapper.toNewsDtoResponse(news);
     }
 
     @Override
     @Transactional
-    public NewsDtoResponse update(NewsDtoRequest
-                                  newsDtoRequest, UUID uuid) {
+    public NewsDtoResponse update(NewsDtoRequestUpdate
+                                          newsDtoRequestUpdate, UUID uuid) {
 
         Optional<News> newsOptional = newsRepository.findById(uuid);
-        if(newsOptional.isPresent()) {
-            News news = newsOptional.get();
-            Optional.ofNullable(newsDtoRequest.getTitle()).ifPresent(news::setTitle);
-            Optional.ofNullable(newsDtoRequest.getText()).ifPresent(news::setText);
-            newsRepository.save(news);
-            return newsMapper.toNewsDtoResponse(news);
+        if (newsOptional.isPresent()) {
+            Optional.ofNullable(newsDtoRequestUpdate.getTitle()).ifPresent(newsOptional.get()::setTitle);
+            Optional.ofNullable(newsDtoRequestUpdate.getText()).ifPresent(newsOptional.get()::setText);
+            newsRepository.save(newsOptional.get());
+            log.info("News updated successfully with id {} at time: {}", newsOptional.get().getId(),
+                    newsOptional.get().getTime());
+            return newsMapper.toNewsDtoResponse(newsOptional.get());
         } else {
             log.error("News not found " + uuid);
             throw new NewsNotFoundException();
@@ -60,10 +63,12 @@ public class NewsServiceImpl implements NewsService {
     @Override
     @Transactional
     public void delete(UUID uuid) {
-        if(!newsRepository.existsById(uuid)) {
-            log.error("News not found " + uuid);
+        int deletedCount = newsRepository.deleteIfExists(uuid);
+
+        if (deletedCount == 0) {
+            log.error("News not found with id {}", uuid);
             throw new NewsNotFoundException();
         }
-        newsRepository.deleteById(uuid);
+        log.info("News deleted successfully with id {}", uuid);
     }
 }

@@ -1,6 +1,7 @@
 package by.clevertec.services;
 
 import by.clevertec.dto.request.NewsDtoRequest;
+import by.clevertec.dto.request.NewsDtoRequestUpdate;
 import by.clevertec.dto.response.NewsDtoResponse;
 import by.clevertec.models.News;
 
@@ -34,16 +35,16 @@ public interface NewsService {
     NewsDtoResponse create(NewsDtoRequest newsDtoRequest);
 
     /**
-     * Update news by her id with use NewsDtoRequest
+     * Update news by its id with use NewsDtoRequest
      *
-     * @param newsDtoRequest data of newsDataRequest
+     * @param newsDtoRequestUpdate data of newsDataRequest
      * @param uuid id of news
      * @return update news with use NewsDtoResponse
      */
-    NewsDtoResponse update(NewsDtoRequest newsDtoRequest, UUID uuid);
+    NewsDtoResponse update(NewsDtoRequestUpdate newsDtoRequestUpdate, UUID uuid);
 
     /**
-     * Delete news by her id.
+     * Delete news by its id.
      *
      * @param uuid id of news
      */
