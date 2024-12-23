@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:tc:postgresql:15.1-alpine://items
+  liquibase:
+    enabled: true
+    change-log: db/changelog/db.changelog-master-test.yml
+
+newsapi:
+  url: "http//localhost:${wiremock.server.port}"
+  path: "/v2/everything"
+  header:
+    value: test

@@ -50,8 +50,8 @@ public class NewsServiceImpl implements NewsService {
         if (newsOptional.isPresent()) {
             Optional.ofNullable(newsDtoRequestUpdate.getTitle()).ifPresent(newsOptional.get()::setTitle);
             Optional.ofNullable(newsDtoRequestUpdate.getText()).ifPresent(newsOptional.get()::setText);
-            newsRepository.save(newsOptional.get());
-            log.info("News updated successfully with id {} at time: {}", newsOptional.get().getId(),
+            News newsUpdate = newsRepository.save(newsOptional.get());
+            log.info("News updated successfully with id {} at time: {}", newsUpdate.getId(),
                     newsOptional.get().getTime());
             return newsMapper.toNewsDtoResponse(newsOptional.get());
         } else {
