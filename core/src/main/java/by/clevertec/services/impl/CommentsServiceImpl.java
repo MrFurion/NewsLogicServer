@@ -52,7 +52,6 @@ public class CommentsServiceImpl implements CommentsService {
         Optional<Comment> commentOptional = commentsRepository.findById(uuid);
         if (commentOptional.isPresent()) {
             Optional.ofNullable(commentDtoRequestUpdate.getText()).ifPresent(commentOptional.get()::setText);
-            Optional.ofNullable(commentDtoRequestUpdate.getUsername()).ifPresent(commentOptional.get()::setUsername);
             Comment commentUpdate = commentsRepository.save(commentOptional.get());
             log.info("Comment updated successfully at time: {}", commentUpdate.getTime());
             return commentsMapper.toCommentsDtoResponse(commentOptional.get());
