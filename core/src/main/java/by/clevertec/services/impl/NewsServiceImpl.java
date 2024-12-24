@@ -27,8 +27,9 @@ public class NewsServiceImpl implements NewsService {
     private final NewsMapper newsMapper;
 
     @Override
-    public News findById(UUID id) {
-        return newsRepository.findById(id).orElseThrow(NewsNotFoundException::new);
+    public NewsDtoResponse findById(UUID id) {
+        News news = newsRepository.findById(id).orElseThrow(NewsNotFoundException::new);
+        return newsMapper.toNewsDtoResponse(news);
     }
 
     @Override

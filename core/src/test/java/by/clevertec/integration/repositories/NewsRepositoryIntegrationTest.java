@@ -1,6 +1,5 @@
 package by.clevertec.integration.repositories;
 
-
 import by.clevertec.repositories.NewsRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

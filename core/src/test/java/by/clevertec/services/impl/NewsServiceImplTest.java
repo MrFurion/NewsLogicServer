@@ -39,23 +39,27 @@ class NewsServiceImplTest {
 
     @Test
     void findById_WhenIdExists() {
+
         //given
-        News expectNews = CreateData.createNews();
-        UUID id = expectNews.getId();
+        News news = CreateData.createNews();
+        UUID id = news.getId();
+        NewsDtoResponse expectNewsDtoResponse = CreateData.createNewsDtoResponse();
 
         //when
-        when(newsRepository.findById(id)).thenReturn(Optional.of(expectNews));
+        when(newsRepository.findById(id)).thenReturn(Optional.of(news));
+        when(newsMapper.toNewsDtoResponse(news)).thenReturn(expectNewsDtoResponse);
 
-        News actualNews = newsServiceImpl.findById(id);
+        NewsDtoResponse actualNewsDtoResponse = newsServiceImpl.findById(id);
 
         //then
-        assertEquals(expectNews, actualNews);
+        assertEquals(expectNewsDtoResponse, actualNewsDtoResponse);
     }
 
     @Test
     void findById_WhenIdDoesNotExist() {
+
         //given
-        UUID id = CreateData.createUUID();
+        UUID id = CreateData.createRandomUUID();
 
         //when
         when(newsRepository.findById(id)).thenReturn(Optional.empty());
@@ -66,6 +70,7 @@ class NewsServiceImplTest {
 
     @Test
     void create() {
+
         //given
         News expectNews = CreateData.createNews();
         NewsDtoRequest newsDtoRequest = CreateData.createNewsDtoRequest();
@@ -87,8 +92,8 @@ class NewsServiceImplTest {
 
     @Test
     void update_WhenIdExists() {
-        //given
 
+        //given
         News expectNews = CreateData.createNews();
         News updateNews = CreateData.updateNews();
         UUID id = expectNews.getId();
@@ -111,7 +116,7 @@ class NewsServiceImplTest {
     void update_WhenIdDoesNotExist() {
 
         //given
-        UUID id = CreateData.createUUID();
+        UUID id = CreateData.createRandomUUID();
 
         //when
         when(newsRepository.findById(id)).thenReturn(Optional.empty());
@@ -123,8 +128,9 @@ class NewsServiceImplTest {
 
     @Test
     void delete_WhenIdExists() {
+
         //given
-        UUID existingId = CreateData.createUUID();
+        UUID existingId = CreateData.createRandomUUID();
         int deleteOperationsCountExpect = 1;
 
         //when
@@ -138,8 +144,9 @@ class NewsServiceImplTest {
 
     @Test
     void delete_WhenIdDoesNotExist() {
+
         //given
-        UUID nonExistentId = CreateData.createUUID();
+        UUID nonExistentId = CreateData.createRandomUUID();
         int deleteOperationsCountExpect = 0;
 
         //when
@@ -148,6 +155,5 @@ class NewsServiceImplTest {
         //then
         assertThrows(NewsNotFoundException.class, () -> newsServiceImpl.delete(nonExistentId));
         verify(newsRepository, times(1)).deleteIfExists(nonExistentId);
-
     }
 }

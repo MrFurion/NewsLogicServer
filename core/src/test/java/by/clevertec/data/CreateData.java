@@ -13,28 +13,30 @@ public class CreateData {
     private static final String TEST_TITLE = "Test title";
     private static final String TEST_TEXT = "Test text";
 
-    public static UUID createUUID() {
+    public static UUID createRandomUUID() {
         return UUID.randomUUID();
     }
 
     public static News createNews() {
 
         return News.builder()
-                .id(createUUID())
+                .id(createRandomUUID())
                 .title(TEST_TITLE)
                 .text(TEST_TEXT)
                 .time(Instant.parse("2024-12-23T10:15:30.00Z"))
                 .build();
     }
+
     public static News updateNews() {
 
         return News.builder()
-                .id(createUUID())
+                .id(createRandomUUID())
                 .title("New test title")
                 .text("New test text")
                 .time(Instant.parse("2024-12-23T10:15:30.00Z"))
                 .build();
     }
+
     public static NewsDtoRequestUpdate updateDtoRequestNews() {
 
         return NewsDtoRequestUpdate.builder()

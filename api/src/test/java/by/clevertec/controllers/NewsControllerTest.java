@@ -5,7 +5,6 @@ import by.clevertec.data.TestCreateDataOfEntity;
 import by.clevertec.dto.request.NewsDtoRequest;
 import by.clevertec.dto.request.NewsDtoRequestUpdate;
 import by.clevertec.dto.response.NewsDtoResponse;
-import by.clevertec.models.News;
 import by.clevertec.services.NewsService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
@@ -47,26 +46,27 @@ class NewsControllerTest {
 
     @Test
     void findNews() throws Exception {
+
         // given
-        UUID id = TestCreateData.createUUID();
-        News news = new News();
-        news.setId(id);
-        news.setText("Some text");
+        UUID id = TestCreateData.createSuccessUUID();
+        NewsDtoResponse newsDtoResponse = TestCreateDataOfEntity.toNewsDtoResponse();
+        newsDtoResponse.setId(id);
 
         //when
-        when(newsService.findById(id)).thenReturn(news);
+        when(newsService.findById(id)).thenReturn(newsDtoResponse);
 
         //then
         mockMvc.perform(get("/news/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.text").value("Some text"))
+                .andExpect(jsonPath("$.title").value(newsDtoResponse.getTitle()))
+                .andExpect(jsonPath("$.text").value(newsDtoResponse.getText()))
                 .andExpect(jsonPath("$.id").value(id.toString()));
     }
 
     @Test
     void createNews() throws Exception {
-        // Given
 
+        // Given
         NewsDtoResponse newsDtoResponse = TestCreateDataOfEntity.toNewsDtoResponse();
 
         when(newsService.create(any(NewsDtoRequest.class))).thenReturn(newsDtoResponse);
@@ -90,7 +90,7 @@ class NewsControllerTest {
     void updateNews() throws Exception {
 
         // Given
-        UUID id = TestCreateData.createUUID();
+        UUID id = TestCreateData.createSuccessUUID();
         NewsDtoResponse newsDtoResponse = new NewsDtoResponse(id, UPDATED_TITLE, UPDATED_TEXT_OF_THE_NEWS);
 
         when(newsService.update(any(NewsDtoRequestUpdate.class), eq(id))).thenReturn(newsDtoResponse);
@@ -108,13 +108,12 @@ class NewsControllerTest {
                 .andExpect(jsonPath("$.id").value(id.toString()))
                 .andExpect(jsonPath("$.title").value(UPDATED_TITLE))
                 .andExpect(jsonPath("$.text").value(UPDATED_TEXT_OF_THE_NEWS));
-
     }
 
     @Test
     void deleteNews() throws Exception {
         // Given
-        UUID id = TestCreateData.createUUID();
+        UUID id = TestCreateData.createSuccessUUID();
 
         // When & Then
         mockMvc.perform(delete("/news/{id}", id))
