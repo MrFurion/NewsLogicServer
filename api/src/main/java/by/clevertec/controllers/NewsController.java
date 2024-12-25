@@ -28,9 +28,9 @@ public class NewsController {
     private final NewsService newsService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<News> findNews(@PathVariable UUID id) {
-        News news = newsService.findById(id);
-        return ResponseEntity.ok(news);
+    public ResponseEntity<NewsDtoResponse> findNews(@PathVariable UUID id) {
+        NewsDtoResponse newsDtoResponse = newsService.findById(id);
+        return ResponseEntity.ok(newsDtoResponse);
     }
 
     @PostMapping
@@ -51,7 +51,6 @@ public class NewsController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteNews(@PathVariable UUID id) {
         newsService.delete(id);
-        return ResponseEntity.noContent()
-                .header("X-Message", "News deleted successfully with id: " + id).build();
+        return ResponseEntity.noContent().build();
     }
 }

@@ -24,7 +24,7 @@ public interface NewsService {
      * @param id News ID
      * @return News
      */
-    News findById(UUID id);
+    NewsDtoResponse findById(UUID id);
 
     /**
      * Create new news with use data of NewsDtoRequest.

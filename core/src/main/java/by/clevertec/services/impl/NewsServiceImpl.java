@@ -27,8 +27,9 @@ public class NewsServiceImpl implements NewsService {
     private final NewsMapper newsMapper;
 
     @Override
-    public News findById(UUID id) {
-        return newsRepository.findById(id).orElseThrow(NewsNotFoundException::new);
+    public NewsDtoResponse findById(UUID id) {
+        News news = newsRepository.findById(id).orElseThrow(NewsNotFoundException::new);
+        return newsMapper.toNewsDtoResponse(news);
     }
 
     @Override
@@ -50,8 +51,8 @@ public class NewsServiceImpl implements NewsService {
         if (newsOptional.isPresent()) {
             Optional.ofNullable(newsDtoRequestUpdate.getTitle()).ifPresent(newsOptional.get()::setTitle);
             Optional.ofNullable(newsDtoRequestUpdate.getText()).ifPresent(newsOptional.get()::setText);
-            newsRepository.save(newsOptional.get());
-            log.info("News updated successfully with id {} at time: {}", newsOptional.get().getId(),
+            News newsUpdate = newsRepository.save(newsOptional.get());
+            log.info("News updated successfully with id {} at time: {}", newsUpdate.getId(),
                     newsOptional.get().getTime());
             return newsMapper.toNewsDtoResponse(newsOptional.get());
         } else {
