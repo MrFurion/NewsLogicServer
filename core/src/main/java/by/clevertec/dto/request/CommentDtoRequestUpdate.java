@@ -10,18 +10,14 @@ import lombok.ToString;
 
 import static by.clevertec.constants.NewsDtoConstants.SHOULD_BE;
 
-@Setter
 @Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @ToString
-@NoArgsConstructor
-@AllArgsConstructor
-public class NewsDtoRequestUpdate {
+public class CommentDtoRequestUpdate {
 
-    @Size(min = 1, max = 50, message = SHOULD_BE + " 1 - 50 characters")
-    private String title;
-
-
-    @Size(min = 1, max = 5000, message = SHOULD_BE + "1 - 5000 characters")
+    @Size(min = 1, max = 2500, message = SHOULD_BE + "1 - 2500")
     private String text;
 }

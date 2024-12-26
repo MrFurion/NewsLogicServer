@@ -17,9 +17,16 @@ public class GlobalExceptionHandler {
     private static final String DESCRIPTION = "description";
 
     @ExceptionHandler(NewsNotFoundException.class)
-    private ProblemDetail handleSensorNotFoundException(NewsNotFoundException exception) {
+    private ProblemDetail handleNewsNotFoundException(NewsNotFoundException exception) {
         ProblemDetail errorDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
         errorDetail.setProperty(DESCRIPTION, "News not found");
+        return errorDetail;
+    }
+
+    @ExceptionHandler(CommentNotFoundException.class)
+    private ProblemDetail handleCommentNotFoundException(CommentNotFoundException exception) {
+        ProblemDetail errorDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
+        errorDetail.setProperty(DESCRIPTION, "Comment not found");
         return errorDetail;
     }
 

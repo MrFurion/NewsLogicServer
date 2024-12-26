@@ -3,7 +3,6 @@ package by.clevertec.services;
 import by.clevertec.dto.request.NewsDtoRequest;
 import by.clevertec.dto.request.NewsDtoRequestUpdate;
 import by.clevertec.dto.response.NewsDtoResponse;
-import by.clevertec.models.News;
 
 import java.util.UUID;
 
@@ -22,7 +21,7 @@ public interface NewsService {
      * ensuring safe handling in case the news item with the specified ID is not present.
      *
      * @param id News ID
-     * @return News
+     * @return NewsDtoResponse
      */
     NewsDtoResponse findById(UUID id);
 
@@ -35,10 +34,10 @@ public interface NewsService {
     NewsDtoResponse create(NewsDtoRequest newsDtoRequest);
 
     /**
-     * Update news by its id with use NewsDtoRequest
+     * Update news by its id with use NewsDtoRequestUpdate
      *
-     * @param newsDtoRequestUpdate data of newsDataRequest
-     * @param uuid id of news
+     * @param newsDtoRequestUpdate data of newsDataRequestUpdate
+     * @param uuid                 id of news
      * @return update news with use NewsDtoResponse
      */
     NewsDtoResponse update(NewsDtoRequestUpdate newsDtoRequestUpdate, UUID uuid);

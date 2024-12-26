@@ -3,7 +3,6 @@ package by.clevertec.controllers;
 import by.clevertec.dto.request.NewsDtoRequest;
 import by.clevertec.dto.request.NewsDtoRequestUpdate;
 import by.clevertec.dto.response.NewsDtoResponse;
-import by.clevertec.models.News;
 import by.clevertec.services.NewsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +36,7 @@ public class NewsController {
     public ResponseEntity<String> createNews(@Validated @RequestBody NewsDtoRequest newsDtoRequest) {
         NewsDtoResponse newsDtoResponse = newsService.create(newsDtoRequest);
         URI location = URI.create("/news/" + newsDtoResponse.getId());
-        return ResponseEntity.created(location).body("News created successfully with id: " + newsDtoResponse.getId());
+        return ResponseEntity.created(location).body("News created successfully");
     }
 
     @PutMapping("/{id}")

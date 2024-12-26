@@ -1,7 +1,10 @@
 package by.clevertec.constants;
 
 public class NewsDtoConstants {
-    public static final String NEWS_NOT_SHOULD_BY_EMPTY = "News should not by empty";
-    public static final String NEWS_SHOULD_BE = "News should be ";
+    public static final String SHOULD_NOT_BY_EMPTY = "should not by empty";
+    public static final String SHOULD_BE = "should be ";
+    public static final String NEWS = "News ";
+    public static final String COMMENT = "Comment ";
+    public static final String USER_NAME = "Username ";
 }
 
