@@ -13,7 +13,7 @@ INSERT INTO News (id, time, text, title) VALUES
 
 -- Test Data for Comment
 INSERT INTO Comment (id, time, text, username, news_id) VALUES
-                                                            ('28ab736b-3f20-4cd1-bb87-2c05e06ea4ab', '2024-01-01', 'This is an amazing article on tech!', 'user123', '1e1a3208-dfc5-4eb7-8d8e-1f50f31dc70a'),
+                                                            ('28ab736b-3f20-4cd1-bb87-2c05e06ea4ab', '2024-01-01 10:00:00+00', 'This is an amazing article on tech!', 'user123', '1e1a3208-dfc5-4eb7-8d8e-1f50f31dc70a'),
                                                             ('b71e4c96-9d6f-450d-81c6-3016efddc84e', '2024-01-02', 'Great championship coverage!', 'sportsfan', 'be3429c5-daae-4b6e-93fc-dcb1e5c9911b'),
                                                             ('937e48de-3af4-4f21-a810-cf8c4d2d9f68', '2024-01-03', 'Loved the recipes. Can’t wait to try!', 'chef87', 'b4c92e1b-334a-46c3-8f4e-58a283a39d78'),
                                                             ('57e38bb6-8b4c-496d-8f04-dae5c7be1a26', '2024-01-04', 'Important read on environmental impact.', 'eco_warrior', '7ac5f6a7-46e5-452e-9340-3545cb4c61f2'),

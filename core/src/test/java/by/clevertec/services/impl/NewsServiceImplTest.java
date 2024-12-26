@@ -122,7 +122,7 @@ class NewsServiceImplTest {
         when(newsRepository.findById(id)).thenReturn(Optional.empty());
 
         //then
-        assertThrows(NewsNotFoundException.class, () -> newsServiceImpl.findById(id));
+        assertThrows(NewsNotFoundException.class, () -> newsServiceImpl.update(CreateData.updateDtoRequestNews(), id));
 
     }
 
@@ -139,7 +139,7 @@ class NewsServiceImplTest {
         newsServiceImpl.delete(existingId);
 
         //then
-        verify(newsRepository, times(deleteOperationsCountExpect)).deleteIfExists(existingId);
+        verify(newsRepository).deleteIfExists(existingId);
     }
 
     @Test
@@ -154,6 +154,6 @@ class NewsServiceImplTest {
 
         //then
         assertThrows(NewsNotFoundException.class, () -> newsServiceImpl.delete(nonExistentId));
-        verify(newsRepository, times(1)).deleteIfExists(nonExistentId);
+        verify(newsRepository).deleteIfExists(nonExistentId);
     }
 }

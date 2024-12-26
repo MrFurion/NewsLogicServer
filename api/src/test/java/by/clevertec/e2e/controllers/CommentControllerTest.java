@@ -1,9 +1,9 @@
 package by.clevertec.e2e.controllers;
 
 import by.clevertec.data.TestCreateData;
-import by.clevertec.dto.request.NewsDtoRequest;
-import by.clevertec.dto.request.NewsDtoRequestUpdate;
-import by.clevertec.dto.response.NewsDtoResponse;
+import by.clevertec.dto.request.CommentDtoRequest;
+import by.clevertec.dto.request.CommentDtoRequestUpdate;
+import by.clevertec.dto.response.CommentsDtoResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +16,11 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.UUID;
 
-import static by.clevertec.constants.ConstantsTest.NEWS;
-import static by.clevertec.constants.ConstantsTest.NEWS_CREATED_SUCCESSFULLY;
+import static by.clevertec.constants.ConstantsTest.COMMENTS_UUID;
+import static by.clevertec.constants.ConstantsTest.COMMENT_CREATED_SUCCESSFULLY;
 import static by.clevertec.constants.ConstantsTest.NEWS_ID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -36,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Sql(scripts = {"classpath:db/data.sql"})
-class NewsControllerTest {
+class CommentControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -45,85 +46,85 @@ class NewsControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void foundNewsByIdShouldReturnNews() throws Exception {
+    void foundCommentByIdShouldReturnComment() throws Exception {
 
         //given
-        UUID uuid = TestCreateData.createSuccessNewsUUID();
+        UUID uuid = TestCreateData.createSuccessCommentsUUID();
 
         //when then
-        mockMvc.perform(get(NEWS_ID, uuid))
+        mockMvc.perform(get(COMMENTS_UUID, uuid))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(uuid.toString()))
-                .andExpect(jsonPath("$.title").value(TestCreateData.createDataNewsSuccess().getTitle()))
-                .andExpect(jsonPath("$.text").value(TestCreateData.createDataNewsSuccess().getText()));
+                .andExpect(jsonPath("$.text").value(TestCreateData.createDataCommentsResponseSuccess().getText()))
+                .andExpect(jsonPath("$.username").value(TestCreateData.createDataCommentsResponseSuccess().getUsername()));
     }
 
     @Test
-    void createNewsShouldReturn201AndLocationHeader() throws Exception {
-        //given
-        NewsDtoRequest newsDtoRequest = TestCreateData.createDataNewsSuccess();
-
-        //when then
-        mockMvc.perform(post(NEWS)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(newsDtoRequest)))
-                .andExpect(status().isCreated())
-                .andExpect(header().string("Location", org.hamcrest.Matchers.startsWith(NEWS)))
-                .andExpect(content().string(org.hamcrest.Matchers.startsWith(NEWS_CREATED_SUCCESSFULLY)));
-    }
-
-    @Test
-    void updateNewsShouldReturn200AndUpdatedNews() throws Exception {
+    void createCommentShouldReturn201AndLocationHeader() throws Exception {
 
         //given
         UUID uuid = TestCreateData.createSuccessNewsUUID();
-        NewsDtoRequestUpdate newsDtoRequestUpdate = TestCreateData.createDataNewsDtoRequestUpdate();
-
-        NewsDtoResponse expectedResponse = NewsDtoResponse.builder()
-                .id(uuid)
-                .title(newsDtoRequestUpdate.getTitle())
-                .text(newsDtoRequestUpdate.getText())
-                .build();
+        CommentDtoRequest commentDtoRequest = TestCreateData.createDataCommentDtoRequestSuccess();
 
         //when then
-        mockMvc.perform(put(NEWS_ID, uuid)
+        mockMvc.perform(post(COMMENTS_UUID, uuid)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(newsDtoRequestUpdate)))
+                        .content(objectMapper.writeValueAsString(commentDtoRequest)))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", org.hamcrest.Matchers.matchesPattern("^/comments/[0-9a-fA-F-]{36}$")))
+                .andExpect(content().string(org.hamcrest.Matchers.startsWith(COMMENT_CREATED_SUCCESSFULLY)));
+    }
+
+    @Test
+    void updateCommentShouldReturn200AndUpdatedComment() throws Exception {
+
+        //given
+        UUID uuid = TestCreateData.createSuccessCommentsUUID();
+        CommentDtoRequestUpdate commentDtoRequestUpdate = TestCreateData.createDataCommentDtoRequestUpdate();
+
+        CommentsDtoResponse expectedResponse = TestCreateData.createDataCommentsResponseSuccess();
+        expectedResponse.setTime(Instant.parse("2024-01-02T00:00:00Z"));
+
+        //when then
+        mockMvc.perform(put(COMMENTS_UUID, uuid)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(commentDtoRequestUpdate)))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(expectedResponse)));
     }
 
     @Test
-    void updateNewsShouldReturn404IfNotFound() throws Exception {
+    void updateCommentShouldReturn404IfNotFound() throws Exception {
         //given
-        UUID uuid = TestCreateData.createBadNewsUUID();
+        UUID uuid = TestCreateData.createBadCommentsUUID();
 
         //when then
-        mockMvc.perform(put(NEWS_ID, uuid)
+        mockMvc.perform(put(COMMENTS_UUID, uuid)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void deleteNewsShouldReturn204() throws Exception {
+    void deleteCommentShouldReturn204() throws Exception {
 
         //given
-        UUID uuid = TestCreateData.createSuccessNewsUUID();
+        UUID uuid = TestCreateData.createSuccessCommentsUUID();
 
         //when then
-        mockMvc.perform(delete(NEWS_ID, uuid))
+        mockMvc.perform(delete(COMMENTS_UUID, uuid))
                 .andExpect(status().isNoContent());
     }
 
     @Test
-    void deleteNewsShouldReturn404IfNotFound() throws Exception {
+    void deleteCommentShouldReturn404IfNotFound() throws Exception {
 
         //given
-        UUID uuid = TestCreateData.createBadNewsUUID();
+        UUID uuid = TestCreateData.createBadCommentsUUID();
 
         //when then
-        mockMvc.perform(delete(NEWS_ID, uuid))
+        mockMvc.perform(delete(COMMENTS_UUID, uuid))
                 .andExpect(status().isNotFound());
     }
+
 }
