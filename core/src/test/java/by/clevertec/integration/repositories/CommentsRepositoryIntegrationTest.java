@@ -1,6 +1,6 @@
 package by.clevertec.integration.repositories;
 
-import by.clevertec.repositories.NewsRepository;
+import by.clevertec.repositories.CommentsRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,22 +15,21 @@ import java.util.UUID;
 @ActiveProfiles("testcontainers")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Sql(scripts = {"classpath:db/data.sql"})
-class NewsRepositoryIntegrationTest {
+public class CommentsRepositoryIntegrationTest {
 
     @Autowired
-    private NewsRepository newsRepository;
-
+    private CommentsRepository commentsRepository;
 
     @Test
     void deleteIfExists() {
 
         //given
-        UUID id = UUID.fromString("1e1a3208-dfc5-4eb7-8d8e-1f50f31dc70a");
+        UUID id = UUID.fromString("28ab736b-3f20-4cd1-bb87-2c05e06ea4ab");
         int expected = 1;
 
         //when
-        Assertions.assertTrue(newsRepository.findById(id).isPresent());
-        int actual = newsRepository.deleteIfExists(id);
+        Assertions.assertTrue(commentsRepository.findById(id).isPresent());
+        int actual = commentsRepository.deleteIfExists(id);
 
         //then
         Assertions.assertEquals(expected, actual);

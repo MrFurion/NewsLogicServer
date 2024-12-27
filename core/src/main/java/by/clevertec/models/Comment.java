@@ -1,6 +1,5 @@
 package by.clevertec.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,7 +15,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.UUID;
 
 @Getter
