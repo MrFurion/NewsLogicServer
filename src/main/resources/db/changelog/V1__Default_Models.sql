@@ -8,7 +8,7 @@ create table News(
 create table Comment(
                         id uuid PRIMARY KEY,
                         time TIMESTAMP WITH TIME ZONE,
-                        text VARCHAR(2500) not null unique,
+                        text VARCHAR(2500) not null,
                         username VARCHAR(25) not null,
                         news_id uuid REFERENCES news(id) on delete cascade
 );

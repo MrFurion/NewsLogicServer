@@ -1,4 +1,4 @@
-package by.clevertec.services.impl;
+package by.clevertec.unit.services;
 
 import by.clevertec.data.CreateData;
 import by.clevertec.dto.request.CommentDtoRequest;
@@ -10,6 +10,7 @@ import by.clevertec.models.Comment;
 import by.clevertec.models.News;
 import by.clevertec.repositories.CommentsRepository;
 import by.clevertec.repositories.NewsRepository;
+import by.clevertec.services.impl.CommentsServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CommmentsServiceImplTest {
+class CommentsServiceImplTest {
 
     @Mock
     private CommentsRepository commentsRepository;
@@ -125,12 +126,13 @@ public class CommmentsServiceImplTest {
 
         //given
         UUID id = CreateData.createRandomUUID();
+        CommentDtoRequestUpdate commentDtoRequestUpdate = CreateData.updateDtoRequestComment();
 
         //when
         when(commentsRepository.findById(id)).thenReturn(Optional.empty());
 
         //then
-        assertThrows(CommentNotFoundException.class, () -> commentsServiceImpl.update(id, CreateData.updateDtoRequestComment()));
+        assertThrows(CommentNotFoundException.class, () -> commentsServiceImpl.update(id, commentDtoRequestUpdate));
     }
 
     @Test

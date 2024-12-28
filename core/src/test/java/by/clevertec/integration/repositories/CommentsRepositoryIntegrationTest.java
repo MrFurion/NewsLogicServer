@@ -15,7 +15,7 @@ import java.util.UUID;
 @ActiveProfiles("testcontainers")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Sql(scripts = {"classpath:db/data.sql"})
-public class CommentsRepositoryIntegrationTest {
+class CommentsRepositoryIntegrationTest {
 
     @Autowired
     private CommentsRepository commentsRepository;

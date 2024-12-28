@@ -13,11 +13,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.search.engine.backend.types.Sortable;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 
 @Getter
 @Setter
@@ -26,6 +31,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @ToString
+@Indexed
 public class News {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,7 +40,12 @@ public class News {
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private Instant time;
 
+    @FullTextField(name = "title")
+    @KeywordField(name = "sort_title", sortable = Sortable.YES)
     private String title;
+
+    @FullTextField(name = "text")
+    @KeywordField(name = "sort_text", sortable = Sortable.YES)
     private String text;
 
     @OneToMany(mappedBy = "news", cascade = CascadeType.ALL, orphanRemoval = true)

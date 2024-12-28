@@ -4,6 +4,7 @@ import by.clevertec.dto.request.CommentDtoRequest;
 import by.clevertec.dto.request.CommentDtoRequestUpdate;
 import by.clevertec.dto.response.CommentsDtoResponse;
 import by.clevertec.exception.CommentNotFoundException;
+import by.clevertec.lucene.repository.CommentsLuceneRepository;
 import by.clevertec.mapper.CommentsMapper;
 import by.clevertec.models.Comment;
 import by.clevertec.models.News;
@@ -12,10 +13,12 @@ import by.clevertec.repositories.NewsRepository;
 import by.clevertec.services.CommentsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.search.engine.search.sort.dsl.SortOrder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,10 +31,23 @@ public class CommentsServiceImpl implements CommentsService {
     private final CommentsRepository commentsRepository;
     private final CommentsMapper commentsMapper;
     private final NewsRepository newsRepository;
+    private final CommentsLuceneRepository commentsLuceneRepository;
 
     public CommentsDtoResponse findById(UUID uuid) {
         Comment comment = commentsRepository.findById(uuid).orElseThrow(CommentNotFoundException::new);
         return commentsMapper.toCommentsDtoResponse(comment);
+    }
+
+    public List<CommentsDtoResponse> fullTextSearchByTextAndUsernameField(String searchElement,
+                                                                          int page,
+                                                                          int pageSize,
+                                                                          String searchableFields,
+                                                                          String sortField,
+                                                                          SortOrder sortOrder
+    ) {
+        List<Comment> comments = commentsLuceneRepository
+                .fullTextSearch(searchElement, page, pageSize, List.of(searchableFields), sortField, sortOrder);
+        return commentsMapper.toCommentsDtoResponseList(comments);
     }
 
     @Transactional
