@@ -36,12 +36,13 @@ public class CommentsController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<CommentsDtoResponse>> searchCommentsByTextAndUsername(@RequestBody String query,
-                                                                          @RequestParam(defaultValue = "0") int startIndex,
-                                                                          @RequestParam(defaultValue = "5") int maxResults,
-                                                                          @RequestParam(defaultValue = "title") String fields,
-                                                                          @RequestParam(defaultValue = "sort_title") String sortBy,
-                                                                          @RequestParam(defaultValue = "ASC") SortOrder sortOrder) {
+    public ResponseEntity<List<CommentsDtoResponse>> searchCommentsByTextAndUsername(
+                                                            @RequestBody String query,
+                                                            @RequestParam(defaultValue = "0") int startIndex,
+                                                            @RequestParam(defaultValue = "5") int maxResults,
+                                                            @RequestParam(defaultValue = "title") String fields,
+                                                            @RequestParam(defaultValue = "sort_title") String sortBy,
+                                                            @RequestParam(defaultValue = "ASC") SortOrder sortOrder) {
 
         List<CommentsDtoResponse> commentsDtoResponses = commentsService.fullTextSearchByTextAndUsernameField(query, startIndex, maxResults,
                 fields, sortBy, sortOrder);

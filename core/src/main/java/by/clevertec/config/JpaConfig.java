@@ -10,5 +10,4 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaRepositories(basePackages = "by.clevertec",
         repositoryBaseClass = BaseRepositoryImpl.class)
 public class JpaConfig {
-
 }

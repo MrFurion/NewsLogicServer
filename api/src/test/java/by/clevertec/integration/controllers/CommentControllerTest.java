@@ -14,10 +14,17 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.UUID;
 
 import static by.clevertec.constants.Constants.COMMENTS_UUID;
 import static by.clevertec.constants.Constants.COMMENT_CREATED_SUCCESSFULLY;
+import static by.clevertec.constants.Constants.FIELDS;
+import static by.clevertec.constants.Constants.MAX_RESULTS;
+import static by.clevertec.constants.Constants.QUERY;
+import static by.clevertec.constants.Constants.SORT_BY;
+import static by.clevertec.constants.Constants.SORT_ORDER;
+import static by.clevertec.constants.Constants.START_INDEX;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -60,6 +67,38 @@ class CommentControllerTest {
                         jsonPath("$.text").value(commentsDtoResponse.getText()),
                         jsonPath("$.username").value(commentsDtoResponse.getUsername())
                 );
+    }
+
+    @Test
+    void searchCommentsByTextAndUsername_shouldReturnFilteredComments() throws Exception {
+        // given
+        List<CommentsDtoResponse> commentsDtoResponses = List.of(
+                TestCreateData.createDataCommentsDtoResponse(),
+                TestCreateData.createDataCommentsDtoResponse()
+        );
+
+        //when
+        when(commentsService.fullTextSearchByTextAndUsernameField(QUERY, START_INDEX, MAX_RESULTS, FIELDS, SORT_BY, SORT_ORDER))
+                .thenReturn(commentsDtoResponses);
+
+        //then
+        mockMvc.perform(get("/comments/search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(QUERY)
+                        .param("startIndex", String.valueOf(START_INDEX))
+                        .param("maxResults", String.valueOf(MAX_RESULTS))
+                        .param("fields", FIELDS)
+                        .param("sortBy", SORT_BY)
+                        .param("sortOrder", SORT_ORDER.name()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(commentsDtoResponses.size()))
+                .andExpect(jsonPath("$[0].username").value(commentsDtoResponses.get(0).getUsername()))
+                .andExpect(jsonPath("$[0].text").value(commentsDtoResponses.get(0).getText()))
+                .andExpect(jsonPath("$[1].username").value(commentsDtoResponses.get(1).getUsername()))
+                .andExpect(jsonPath("$[1].text").value(commentsDtoResponses.get(1).getText()));
+
+        verify(commentsService).fullTextSearchByTextAndUsernameField(QUERY, START_INDEX, MAX_RESULTS, FIELDS, SORT_BY, SORT_ORDER);
     }
 
     @Test

@@ -12,11 +12,7 @@ import java.util.UUID;
 
 /**
  * NewsService interface defines the contract for services related to news operations.
- * This includes methods for retrieving, creating, updating, and deleting news items.
- * The implementation of this interface is expected to provide the actual business logic
- * for handling news data in the application.
  */
-
 public interface NewsService {
 
     /**
@@ -68,13 +64,9 @@ public interface NewsService {
      * @return a list of {@code NewsDtoResponse} objects representing the search results.
      * Each object contains information about a record matching the search query.
      */
-    List<NewsDtoResponse> fullTextSearchByTitleAndTextField(String searchElement,
-                                                            int page,
-                                                            int pageSize,
-                                                            String searchableFields,
-                                                            String sortField,
-                                                            SortOrder sortOrder
-    );
+    List<NewsDtoResponse> fullTextSearchByTitleAndTextField(String searchElement, int page, int pageSize,
+                                                            String searchableFields, String sortField,
+                                                            SortOrder sortOrder);
 
     /**
      * Create new news with use data of NewsDtoRequest.

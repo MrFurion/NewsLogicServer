@@ -4,7 +4,10 @@ import by.clevertec.data.TestCreateData;
 import by.clevertec.dto.request.NewsDtoRequest;
 import by.clevertec.dto.request.NewsDtoRequestUpdate;
 import by.clevertec.dto.response.NewsDtoResponse;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -16,11 +19,14 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static by.clevertec.constants.Constants.NEWS;
 import static by.clevertec.constants.Constants.NEWS_CREATED_SUCCESSFULLY;
 import static by.clevertec.constants.Constants.NEWS_ID;
+import static by.clevertec.constants.Constants.PAGE;
+import static by.clevertec.constants.Constants.SIZE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -59,6 +65,42 @@ class NewsControllerTest {
     }
 
     @Test
+    void findAllNewsShouldReturnPaginatedNews() throws Exception {
+
+        // when & then
+        mockMvc.perform(get("/news")
+                        .param("page", String.valueOf(PAGE))
+                        .param("size", String.valueOf(SIZE)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.length()").value(SIZE))
+                .andExpect(jsonPath("$.content[0].id").isNotEmpty())
+                .andExpect(jsonPath("$.content[0].title").isNotEmpty())
+                .andExpect(jsonPath("$.content[0].text").isNotEmpty())
+                .andExpect(jsonPath("$.totalElements").isNotEmpty())
+                .andExpect(jsonPath("$.totalPages").isNotEmpty())
+                .andExpect(jsonPath("$.number").value(PAGE))
+                .andExpect(jsonPath("$.size").value(SIZE));
+    }
+
+    @Test
+    void findAllNewsWithCommentsShouldReturnPagedResults() throws Exception {
+        // given
+        UUID newsId = TestCreateData.createSuccessNewsUUID();
+
+        // when & then
+        mockMvc.perform(get("/news/{id}/comments", newsId)
+                        .param("page", String.valueOf(PAGE))
+                        .param("size", String.valueOf(SIZE))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").exists())
+                .andExpect(jsonPath("$.totalElements").exists())
+                .andExpect(jsonPath("$.totalPages").exists())
+                .andExpect(jsonPath("$.size").value(SIZE));
+    }
+
+    @Test
     void createNewsShouldReturn201AndLocationHeader() throws Exception {
         //given
         NewsDtoRequest newsDtoRequest = TestCreateData.createDataNewsSuccess();
@@ -75,7 +117,7 @@ class NewsControllerTest {
     @Test
     void updateNewsShouldReturn200AndUpdatedNews() throws Exception {
 
-        //given
+        // given
         UUID uuid = TestCreateData.createSuccessNewsUUID();
         NewsDtoRequestUpdate newsDtoRequestUpdate = TestCreateData.createDataNewsDtoRequestUpdate();
 
@@ -83,14 +125,20 @@ class NewsControllerTest {
                 .id(uuid)
                 .title(newsDtoRequestUpdate.getTitle())
                 .text(newsDtoRequestUpdate.getText())
+                .comments(new ArrayList<>())
                 .build();
 
-        //when then
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        JsonNode expectedJson = objectMapper.valueToTree(expectedResponse);
+        ((ObjectNode) expectedJson).remove("comments");
+
+        // when then
         mockMvc.perform(put(NEWS_ID, uuid)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newsDtoRequestUpdate)))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(expectedResponse)));
+                .andExpect(content().json(expectedJson.toString()));
     }
 
     @Test

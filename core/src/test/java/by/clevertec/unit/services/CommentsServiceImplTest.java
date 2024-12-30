@@ -5,21 +5,33 @@ import by.clevertec.dto.request.CommentDtoRequest;
 import by.clevertec.dto.request.CommentDtoRequestUpdate;
 import by.clevertec.dto.response.CommentsDtoResponse;
 import by.clevertec.exception.CommentNotFoundException;
+import by.clevertec.lucene.repository.CommentsLuceneRepository;
 import by.clevertec.mapper.CommentsMapper;
 import by.clevertec.models.Comment;
 import by.clevertec.models.News;
 import by.clevertec.repositories.CommentsRepository;
 import by.clevertec.repositories.NewsRepository;
 import by.clevertec.services.impl.CommentsServiceImpl;
+import org.hibernate.search.engine.search.sort.dsl.SortOrder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static by.clevertec.constants.Constants.PAGE;
+import static by.clevertec.constants.Constants.PAGE_SIZE;
+import static by.clevertec.constants.Constants.SEARCHABLE_FIELDS;
+import static by.clevertec.constants.Constants.SEARCH_ELEMENT;
+import static by.clevertec.constants.Constants.SORT_FIELD;
+import static by.clevertec.constants.Constants.SORT_ORDER;
+import static org.hibernate.search.util.common.impl.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,6 +50,9 @@ class CommentsServiceImplTest {
     @Mock
     private NewsRepository newsRepository;
 
+    @Mock
+    private CommentsLuceneRepository commentsLuceneRepository;
+
     @InjectMocks
     private CommentsServiceImpl commentsServiceImpl;
 
@@ -52,7 +67,6 @@ class CommentsServiceImplTest {
         //when
         when(commentsRepository.findById(id)).thenReturn(Optional.of(comment));
         when(commentsMapper.toCommentsDtoResponse(comment)).thenReturn(expectCommentDtoResponse);
-
         CommentsDtoResponse actualNewsDtoResponse = commentsServiceImpl.findById(id);
 
         //then
@@ -87,7 +101,6 @@ class CommentsServiceImplTest {
         when(commentsMapper.toCommentsDtoResponse(expectedComment)).thenReturn(expectedCommentDtoResponse);
         when(newsRepository.findById(newsUuid)).thenReturn(Optional.of(expectedNews));
         when(commentsRepository.save(expectedComment)).thenReturn(expectedComment);
-
         CommentsDtoResponse actualResponse = commentsServiceImpl.create(newsUuid, commentDtoRequest);
 
         //then
@@ -114,7 +127,6 @@ class CommentsServiceImplTest {
         when(commentsRepository.findById(id)).thenReturn(Optional.of(expectedComment));
         when(commentsRepository.save(expectedComment)).thenReturn(updateComment);
         when(commentsMapper.toCommentsDtoResponse(any(Comment.class))).thenReturn(expectResponse);
-
         CommentsDtoResponse actualResponse = commentsServiceImpl.update(id, commentDtoRequestUpdate);
 
         //then
@@ -144,7 +156,6 @@ class CommentsServiceImplTest {
 
         //when
         when(commentsRepository.deleteIfExists(existingId)).thenReturn(deleteOperationsCountExpect);
-
         commentsServiceImpl.delete(existingId);
 
         //then
@@ -164,5 +175,33 @@ class CommentsServiceImplTest {
         //then
         assertThrows(CommentNotFoundException.class, () -> commentsServiceImpl.delete(nonExistentId));
         verify(commentsRepository).deleteIfExists(nonExistentId);
+    }
+
+    @Test
+    void fullTextSearchByTextAndUsernameField_shouldReturnMappedDtoList() {
+        //given
+        Comment comment1 = CreateData.createComment();
+        Comment comment2 = CreateData.updateComment();
+        List<Comment> mockCommentsList = List.of(comment1, comment2);
+        CommentsDtoResponse dto1 = new CommentsDtoResponse(comment1.getId(), comment1.getTime(), comment1.getText(), comment1.getUsername());
+        CommentsDtoResponse dto2 = new CommentsDtoResponse(comment2.getId(), comment2.getTime(), comment2.getText(), comment2.getUsername());
+        List<CommentsDtoResponse> expectedDtoList = List.of(dto1, dto2);
+
+        //when
+        Mockito.when(commentsLuceneRepository.fullTextSearch(
+                        SEARCH_ELEMENT, PAGE, PAGE_SIZE, List.of(SEARCHABLE_FIELDS), SORT_FIELD, SORT_ORDER))
+                .thenReturn(mockCommentsList);
+
+        Mockito.when(commentsMapper.toCommentsDtoResponseList(mockCommentsList)).thenReturn(expectedDtoList);
+        List<CommentsDtoResponse> result = commentsServiceImpl.fullTextSearchByTextAndUsernameField(
+                SEARCH_ELEMENT, PAGE, PAGE_SIZE, SEARCHABLE_FIELDS, SORT_FIELD, SORT_ORDER);
+
+        //then
+        assertNotNull(result, "Result should not be null");
+        assertEquals(expectedDtoList.size(), result.size());
+        assertEquals(expectedDtoList, result);
+        verify(commentsLuceneRepository).fullTextSearch(
+                SEARCH_ELEMENT, PAGE, PAGE_SIZE, List.of(SEARCHABLE_FIELDS), SORT_FIELD, SORT_ORDER);
+        verify(commentsMapper).toCommentsDtoResponseList(mockCommentsList);
     }
 }

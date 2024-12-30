@@ -5,6 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.mapper.orm.massindexing.MassIndexer;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -20,8 +21,7 @@ public class BuildLuceneIndexOnStartupListener
     private EntityManager entityManager;
 
     @Override
-    public void onApplicationEvent(ApplicationReadyEvent event) {
-
+    public void onApplicationEvent(@NotNull ApplicationReadyEvent event) {
         log.info("Started Initializing Indexes");
         MassIndexer massIndexer = Search.session( entityManager ).massIndexer();
 
