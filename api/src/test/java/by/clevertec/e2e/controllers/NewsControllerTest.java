@@ -18,9 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
-import static by.clevertec.constants.ConstantsTest.NEWS;
-import static by.clevertec.constants.ConstantsTest.NEWS_CREATED_SUCCESSFULLY;
-import static by.clevertec.constants.ConstantsTest.NEWS_ID;
+import static by.clevertec.constants.Constants.NEWS;
+import static by.clevertec.constants.Constants.NEWS_CREATED_SUCCESSFULLY;
+import static by.clevertec.constants.Constants.NEWS_ID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

@@ -11,7 +11,7 @@ import lombok.ToString;
 
 import static by.clevertec.constants.NewsDtoConstants.NEWS;
 import static by.clevertec.constants.NewsDtoConstants.SHOULD_BE;
-import static by.clevertec.constants.NewsDtoConstants.SHOULD_NOT_BY_EMPTY;
+import static by.clevertec.constants.NewsDtoConstants.SHOULD_NOT_BE_EMPTY;
 
 @Setter
 @Getter
@@ -21,11 +21,11 @@ import static by.clevertec.constants.NewsDtoConstants.SHOULD_NOT_BY_EMPTY;
 @AllArgsConstructor
 public class NewsDtoRequest {
 
-    @NotEmpty(message = NEWS + SHOULD_NOT_BY_EMPTY)
+    @NotEmpty(message = NEWS + SHOULD_NOT_BE_EMPTY)
     @Size(min = 1, max = 50, message = NEWS + SHOULD_BE + " 1 - 50 characters")
     private String title;
 
-    @NotEmpty(message = NEWS + SHOULD_NOT_BY_EMPTY)
+    @NotEmpty(message = NEWS + SHOULD_NOT_BE_EMPTY)
     @Size(min = 1, max = 5000, message = NEWS + SHOULD_BE + "1 - 5000 characters")
     private String text;
 }

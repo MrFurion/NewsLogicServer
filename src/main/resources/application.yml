@@ -9,9 +9,16 @@ spring:
     hibernate:
       dialect: org.hibernate.dialect.PostgreSQLDialect
 
+      search:
+        backend:
+          type: lucene
+          directory:
+            root: ./indexes
+
   #liquibase
   liquibase:
-    changelog: db/changelog/V1__Default_Models.sql
+    changelog: db/changelog/changelog.xml
+
 
   logging:
     level:

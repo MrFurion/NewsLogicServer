@@ -1,6 +1,10 @@
 package by.clevertec.constants;
 
-public class ConstantsTest {
+public final class Constants {
+
+    private Constants() {
+    }
+
     public static final String NEWS_ID = "/news/{id}";
     public static final String NEWS_CREATED_SUCCESSFULLY = "News created successfully";
     public static final String NEWS = "/news";

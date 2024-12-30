@@ -1,4 +1,4 @@
-package by.clevertec.services.impl;
+package by.clevertec.unit.services;
 
 import by.clevertec.data.CreateData;
 import by.clevertec.dto.request.NewsDtoRequest;
@@ -8,6 +8,7 @@ import by.clevertec.exception.NewsNotFoundException;
 import by.clevertec.mapper.NewsMapper;
 import by.clevertec.models.News;
 import by.clevertec.repositories.NewsRepository;
+import by.clevertec.services.impl.NewsServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -117,13 +118,13 @@ class NewsServiceImplTest {
 
         //given
         UUID id = CreateData.createRandomUUID();
+        NewsDtoRequestUpdate newsDtoRequestUpdate = CreateData.updateDtoRequestNews();
 
         //when
         when(newsRepository.findById(id)).thenReturn(Optional.empty());
 
         //then
-        assertThrows(NewsNotFoundException.class, () -> newsServiceImpl.update(CreateData.updateDtoRequestNews(), id));
-
+        assertThrows(NewsNotFoundException.class, () -> newsServiceImpl.update(newsDtoRequestUpdate, id));
     }
 
     @Test

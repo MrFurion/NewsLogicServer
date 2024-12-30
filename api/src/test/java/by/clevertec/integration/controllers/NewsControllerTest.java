@@ -1,5 +1,6 @@
-package by.clevertec.controllers;
+package by.clevertec.integration.controllers;
 
+import by.clevertec.controllers.NewsController;
 import by.clevertec.data.TestCreateData;
 import by.clevertec.dto.request.NewsDtoRequest;
 import by.clevertec.dto.request.NewsDtoRequestUpdate;
@@ -15,9 +16,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
 
-import static by.clevertec.constants.ConstantsTest.NEWS;
-import static by.clevertec.constants.ConstantsTest.NEWS_CREATED_SUCCESSFULLY;
-import static by.clevertec.constants.ConstantsTest.NEWS_ID;
+import static by.clevertec.constants.Constants.NEWS;
+import static by.clevertec.constants.Constants.NEWS_CREATED_SUCCESSFULLY;
+import static by.clevertec.constants.Constants.NEWS_ID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -49,19 +50,17 @@ class NewsControllerTest {
     void findNews() throws Exception {
 
         // given
-        UUID id = TestCreateData.createSuccessNewsUUID();
         NewsDtoResponse newsDtoResponse = TestCreateData.createDataNewsDtoResponse();
-        newsDtoResponse.setId(id);
 
         //when
-        when(newsService.findById(id)).thenReturn(newsDtoResponse);
+        when(newsService.findById(newsDtoResponse.getId())).thenReturn(newsDtoResponse);
 
         //then
-        mockMvc.perform(get(NEWS_ID, id))
+        mockMvc.perform(get(NEWS_ID, newsDtoResponse.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(newsDtoResponse.getTitle()))
                 .andExpect(jsonPath("$.text").value(newsDtoResponse.getText()))
-                .andExpect(jsonPath("$.id").value(id.toString()));
+                .andExpect(jsonPath("$.id").value(newsDtoResponse.getId().toString()));
     }
 
     @Test
@@ -70,9 +69,10 @@ class NewsControllerTest {
         // Given
         NewsDtoResponse newsDtoResponse = TestCreateData.createDataNewsDtoResponse();
 
+        // When
         when(newsService.create(any(NewsDtoRequest.class))).thenReturn(newsDtoResponse);
 
-        // When & Then
+        //Then
         mockMvc.perform(post(NEWS)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
@@ -91,7 +91,7 @@ class NewsControllerTest {
     void updateNews() throws Exception {
 
         // Given
-        UUID id = TestCreateData.createSuccessNewsUUID();
+        UUID id = UUID.randomUUID();
         NewsDtoResponse newsDtoResponse = new NewsDtoResponse(id, UPDATED_TITLE, UPDATED_TEXT_OF_THE_NEWS);
 
         when(newsService.update(any(NewsDtoRequestUpdate.class), eq(id))).thenReturn(newsDtoResponse);
@@ -114,7 +114,7 @@ class NewsControllerTest {
     @Test
     void deleteNews() throws Exception {
         // Given
-        UUID id = TestCreateData.createSuccessNewsUUID();
+        UUID id = UUID.randomUUID();
 
         // When & Then
         mockMvc.perform(delete(NEWS_ID, id))

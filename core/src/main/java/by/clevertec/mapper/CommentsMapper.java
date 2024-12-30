@@ -7,6 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CommentsMapper {
 
@@ -16,5 +18,5 @@ public interface CommentsMapper {
 
     Comment toComment(CommentDtoRequest commentDtoRequest);
 
-
+    List<CommentsDtoResponse> toCommentsDtoResponseList(List<Comment> comments);
 }

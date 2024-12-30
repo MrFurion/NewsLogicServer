@@ -1,5 +1,6 @@
-package by.clevertec.controllers;
+package by.clevertec.integration.controllers;
 
+import by.clevertec.controllers.CommentsController;
 import by.clevertec.data.TestCreateData;
 import by.clevertec.dto.request.CommentDtoRequest;
 import by.clevertec.dto.request.CommentDtoRequestUpdate;
@@ -15,8 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
 
-import static by.clevertec.constants.ConstantsTest.COMMENTS_UUID;
-import static by.clevertec.constants.ConstantsTest.COMMENT_CREATED_SUCCESSFULLY;
+import static by.clevertec.constants.Constants.COMMENTS_UUID;
+import static by.clevertec.constants.Constants.COMMENT_CREATED_SUCCESSFULLY;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -44,7 +45,7 @@ class CommentControllerTest {
     void findComment() throws Exception {
 
         //given
-        UUID commentId = TestCreateData.createSuccessCommentsUUID();
+        UUID commentId = UUID.randomUUID();
         CommentsDtoResponse commentsDtoResponse = TestCreateData.createDataCommentsDtoResponse();
 
         //when
@@ -65,7 +66,7 @@ class CommentControllerTest {
     void createComment() throws Exception {
 
         //given
-        UUID commentId = TestCreateData.createSuccessNewsUUID();
+        UUID commentId = UUID.randomUUID();
         CommentsDtoResponse commentsDtoResponse = TestCreateData.createDataCommentsDtoResponse();
 
         //when
@@ -88,7 +89,7 @@ class CommentControllerTest {
     void updateComment() throws Exception {
 
         //given
-        UUID commentId = TestCreateData.createSuccessCommentsUUID();
+        UUID commentId = UUID.randomUUID();
         CommentsDtoResponse commentsDtoResponse = TestCreateData.createDataCommentsDtoResponse();
 
         //when
@@ -114,7 +115,7 @@ class CommentControllerTest {
     @Test
     void deleteNews() throws Exception {
         // Given
-        UUID uuid = TestCreateData.createSuccessCommentsUUID();
+        UUID uuid = UUID.randomUUID();
 
         // When & Then
         mockMvc.perform(delete(COMMENTS_UUID, uuid))
