@@ -44,7 +44,7 @@ import static by.clevertec.constants.Constants.INTERNAL_SERVER_ERROR1;
 import static by.clevertec.constants.Constants.INVALID_INPUT_PARAMETERS;
 import static by.clevertec.constants.Constants.INVALID_REQUEST_BODY;
 import static by.clevertec.constants.Constants.LOCATION;
-import static by.clevertec.constants.Constants.MAXIMUM_NUMBER_OF_RESULTS_TO_RETURN_DEFAULT;
+import static by.clevertec.constants.Constants.MAXIMUM_NUMBER_OF_RESULTS;
 import static by.clevertec.constants.Constants.MAX_RESULTS;
 import static by.clevertec.constants.Constants.NEWS_NOT_FOUND;
 import static by.clevertec.constants.Constants.NOT_FOUND;
@@ -116,7 +116,7 @@ public class NewsController {
             parameters = {
                     @Parameter(name = QUERY, description = QUERY_STRING_TO_SEARCH_FOR_IN_NEWS_TITLES_AND_TEXT, required = true),
                     @Parameter(name = START_INDEX, description = STARTING_INDEX_OF_THE_RESULTS_DEFAULT, in = ParameterIn.QUERY),
-                    @Parameter(name = MAX_RESULTS, description = MAXIMUM_NUMBER_OF_RESULTS_TO_RETURN_DEFAULT, in = ParameterIn.QUERY),
+                    @Parameter(name = MAX_RESULTS, description = MAXIMUM_NUMBER_OF_RESULTS, in = ParameterIn.QUERY),
                     @Parameter(name = FIELDS, description = FIELDS_TO_SEARCH_IN_E_G_TITLE_TEXT_ETC_DEFAULT_IS_TITLE, in = ParameterIn.QUERY),
                     @Parameter(name = SORT_BY, description = FIELD_BY_WHICH_TO_SORT_THE_RESULTS_DEFAULT_IS_SORT_TITLE, in = ParameterIn.QUERY),
                     @Parameter(name = SORT_ORDER, description = SORT_ORDER_ASC_FOR_ASCENDING, in = ParameterIn.QUERY)

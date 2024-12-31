@@ -11,7 +11,7 @@ public class Constants {
     public static final String NO_CONTENT = "204";
     public static final String NEWS_NOT_FOUND = "News not found";
     public static final String STARTING_INDEX_OF_THE_RESULTS_DEFAULT = "The starting index of the results (default is 0)";
-    public static final String MAXIMUM_NUMBER_OF_RESULTS_TO_RETURN_DEFAULT = "The maximum number of results to return (default is 5)";
+    public static final String MAXIMUM_NUMBER_OF_RESULTS = "The maximum number of results to return (default is 5)";
     public static final String CREATED = "201";
     public static final String INTERNAL_SERVER_ERROR1 = "Internal server error";
     public static final String PAGE = "page";
