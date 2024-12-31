@@ -4,6 +4,12 @@ import by.clevertec.dto.request.CommentDtoRequest;
 import by.clevertec.dto.request.CommentDtoRequestUpdate;
 import by.clevertec.dto.response.CommentsDtoResponse;
 import by.clevertec.services.CommentsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.search.engine.search.sort.dsl.SortOrder;
 import org.springframework.http.ResponseEntity;
@@ -29,12 +35,42 @@ public class CommentsController {
 
     private final CommentsService commentsService;
 
+    @Operation(
+            summary = "Get a specific comment by its ID",
+            description = "Retrieves a comment by its unique UUID.",
+            parameters = {
+                    @Parameter(name = "uuid", description = "The UUID of the comment to retrieve", required = true, in = ParameterIn.PATH)
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successfully retrieved the comment",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = CommentsDtoResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "Comment not found"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            })
     @GetMapping("/{uuid}")
     public ResponseEntity<CommentsDtoResponse> findComment(@PathVariable UUID uuid) {
         CommentsDtoResponse response = commentsService.findById(uuid);
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+            summary = "Search comments by text and username",
+            description = "Searches for comments based on a query string, text fields, and optional filters like sorting and pagination.",
+            parameters = {
+                    @Parameter(name = "query", description = "The search query for comments (used for full-text search)", required = true),
+                    @Parameter(name = "startIndex", description = "The starting index for pagination (default is 0)", in = ParameterIn.QUERY),
+                    @Parameter(name = "maxResults", description = "The maximum number of results per page (default is 5)", in = ParameterIn.QUERY),
+                    @Parameter(name = "fields", description = "The fields to search within (default is 'title')", in = ParameterIn.QUERY),
+                    @Parameter(name = "sortBy", description = "The field to sort by (default is 'sort_title')", in = ParameterIn.QUERY),
+                    @Parameter(name = "sortOrder", description = "The order to sort results in ('ASC' or 'DESC', default is 'ASC')", in = ParameterIn.QUERY)
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successfully retrieved the search results",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = List.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid query parameters"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            })
     @GetMapping("/search")
     public ResponseEntity<List<CommentsDtoResponse>> searchCommentsByTextAndUsername(
                                                             @RequestBody String query,
@@ -49,6 +85,18 @@ public class CommentsController {
         return ResponseEntity.ok(commentsDtoResponses);
     }
 
+    @Operation(
+            summary = "Create a new comment for a specific news",
+            description = "Creates a new comment for the news identified by the UUID and returns the created comment's details.",
+            parameters = {
+                    @Parameter(name = "uuid", description = "The UUID of the news to associate the comment with", required = true, in = ParameterIn.PATH)
+            },
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Successfully created the comment",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid input data"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            })
     @PostMapping("/{uuid}")
     public ResponseEntity<String> createComment(@Validated @RequestBody CommentDtoRequest commentDtoRequest,
                                                 @PathVariable UUID uuid) {
@@ -57,6 +105,19 @@ public class CommentsController {
         return ResponseEntity.created(location).body("Comment created successfully");
     }
 
+    @Operation(
+            summary = "Update an existing comment",
+            description = "Updates an existing comment identified by its UUID and returns the updated comment details.",
+            parameters = {
+                    @Parameter(name = "uuid", description = "The UUID of the comment to update", required = true, in = ParameterIn.PATH)
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successfully updated the comment",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = CommentsDtoResponse.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid input data"),
+                    @ApiResponse(responseCode = "404", description = "Comment not found"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            })
     @PutMapping("/{uuid}")
     public ResponseEntity<CommentsDtoResponse> updateComment(@PathVariable UUID uuid,
                                                              @RequestBody CommentDtoRequestUpdate commentDtoRequestUpdate) {
@@ -64,6 +125,17 @@ public class CommentsController {
         return ResponseEntity.ok(commentsDtoResponse);
     }
 
+    @Operation(
+            summary = "Delete a comment",
+            description = "Deletes a comment identified by its UUID.",
+            parameters = {
+                    @Parameter(name = "uuid", description = "The UUID of the comment to delete", required = true, in = ParameterIn.PATH)
+            },
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Successfully deleted the comment"),
+                    @ApiResponse(responseCode = "404", description = "Comment not found"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            })
     @DeleteMapping("/{uuid}")
     public ResponseEntity<String> deleteComment(@PathVariable UUID uuid) {
         commentsService.delete(uuid);

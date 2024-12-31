@@ -1,4 +1,4 @@
-package by.clevertec.dto.response;
+package by.clevertec.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,18 +8,22 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
-@Setter
+
 @Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @ToString
-@NoArgsConstructor
-@AllArgsConstructor
-public class CommentsDtoResponse {
+public class News {
+
     private UUID id;
     private Instant time;
+    private String title;
     private String text;
-    private String username;
+    private List<Comment> comments = new ArrayList<>();
 }
-

@@ -1,6 +1,5 @@
 package by.clevertec.dto.response;
 
-import by.clevertec.models.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.List;
+import java.time.Instant;
 import java.util.UUID;
 
 @Setter
@@ -17,9 +16,9 @@ import java.util.UUID;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class NewsDtoResponse {
+public class CommentsDtoResponse {
     private UUID id;
-    private String title;
+    private Instant time;
     private String text;
-    private List<Comment> comments;
+    private String username;
 }
