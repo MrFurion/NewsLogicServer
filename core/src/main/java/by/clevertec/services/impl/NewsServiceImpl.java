@@ -1,5 +1,6 @@
 package by.clevertec.services.impl;
 
+
 import by.clevertec.dto.request.NewsDtoRequest;
 import by.clevertec.dto.request.NewsDtoRequestUpdate;
 import by.clevertec.dto.response.NewsDtoResponse;
@@ -13,6 +14,9 @@ import by.clevertec.services.NewsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.search.engine.search.sort.dsl.SortOrder;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -37,16 +41,21 @@ public class NewsServiceImpl implements NewsService {
     private final NewsLuceneRepository newsLuceneRepository;
 
     @Override
+    @Cacheable(cacheNames = "news", key = "#id")
     public NewsDtoResponse findById(UUID id) {
         News news = newsRepository.findById(id).orElseThrow(NewsNotFoundException::new);
         return newsMapper.toNewsDtoResponse(news);
     }
 
+    @Override
+    @Cacheable(cacheNames = "news", key = "#pageable")
     public Page<NewsDtoResponse> findAll(Pageable pageable) {
         Page<News> newsPage = newsRepository.findAll(pageable);
         return newsPage.map(newsMapper::toNewsDtoResponse);
     }
 
+    @Override
+    @Cacheable(cacheNames = "news", key = "#page + '_' + #size")
     public Page<NewsDtoResponse> findByIdWithAllComments(UUID uuid, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         News news = newsRepository.findById(uuid).orElseThrow(NewsNotFoundException::new);
@@ -63,15 +72,20 @@ public class NewsServiceImpl implements NewsService {
         return new PageImpl<>(Collections.singletonList(newsDtoResponse), pageable, 1);
     }
 
-    public List<NewsDtoResponse> fullTextSearchByTitleAndTextField(String searchElement, int page, int pageSize,
-                                            String searchableFields, String sortField, SortOrder sortOrder) {
+    @Override
+    @Cacheable(cacheNames = "news", key = "T(String).format('%s-%d-%d-%s-%s-%s', " +
+                                          "#searchElement, #pageStart, #pageSize, " +
+                                          "#searchableFields, #sortField, #sortOrder)")
+    public List<NewsDtoResponse> fullTextSearchByTitleAndTextField(String searchElement, int pageStart, int pageSize,
+                                                                   String searchableFields, String sortField, SortOrder sortOrder) {
         List<News> news = newsLuceneRepository
-                .fullTextSearch(searchElement, page, pageSize, List.of(searchableFields), sortField, sortOrder);
+                .fullTextSearch(searchElement, pageStart, pageSize, List.of(searchableFields), sortField, sortOrder);
         return newsMapper.toNewsDtoResponseList(news);
     }
 
     @Override
     @Transactional
+    @CachePut(cacheNames = "news", key = "#result.id")
     public NewsDtoResponse create(NewsDtoRequest newsDtoRequest) {
         News news = newsMapper.toNews(newsDtoRequest);
         news.setTime(Instant.now());
@@ -82,6 +96,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
+    @CachePut(cacheNames = "news", key = "#uuid")
     public NewsDtoResponse update(NewsDtoRequestUpdate newsDtoRequestUpdate, UUID uuid) {
         Optional<News> newsOptional = newsRepository.findById(uuid);
         if (newsOptional.isPresent()) {
@@ -99,6 +114,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
+    @CacheEvict(cacheNames = "news", key = "#uuid")
     public void delete(UUID uuid) {
         int deletedCount = newsRepository.deleteIfExists(uuid);
 

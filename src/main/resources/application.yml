@@ -19,8 +19,13 @@ spring:
   liquibase:
     changelog: db/changelog/changelog.xml
 
-
   logging:
     level:
       org.springframework.beans.factory: DEBUG
       org.springframework.context.annotation: DEBUG
+
+#Cache configuration
+cache:
+  default:
+    type: lfu
+    capacity: 200

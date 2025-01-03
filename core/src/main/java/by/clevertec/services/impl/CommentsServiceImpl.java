@@ -14,6 +14,9 @@ import by.clevertec.services.CommentsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.search.engine.search.sort.dsl.SortOrder;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,11 +36,17 @@ public class CommentsServiceImpl implements CommentsService {
     private final NewsRepository newsRepository;
     private final CommentsLuceneRepository commentsLuceneRepository;
 
+    @Override
+    @Cacheable(cacheNames = "comments", key = "#uuid")
     public CommentsDtoResponse findById(UUID uuid) {
         Comment comment = commentsRepository.findById(uuid).orElseThrow(CommentNotFoundException::new);
         return commentsMapper.toCommentsDtoResponse(comment);
     }
 
+    @Override
+    @Cacheable(cacheNames = "comments", key = "T(String).format('%s-%d-%d-%s-%s-%s', " +
+                                          "#searchElement, #page, #pageSize, " +
+                                          "#searchableFields, #sortField, #sortOrder)")
     public List<CommentsDtoResponse> fullTextSearchByTextAndUsernameField(String searchElement, int page, int pageSize,
                                                                           String searchableFields, String sortField,
                                                                           SortOrder sortOrder) {
@@ -46,7 +55,9 @@ public class CommentsServiceImpl implements CommentsService {
         return commentsMapper.toCommentsDtoResponseList(comments);
     }
 
+    @Override
     @Transactional
+    @CachePut(cacheNames = "comments", key = "#result.id")
     public CommentsDtoResponse create(UUID newsUuid, CommentDtoRequest commentDtoRequest) {
         Comment comment = commentsMapper.toComment(commentDtoRequest);
         //TODO get userName out of context
@@ -58,7 +69,9 @@ public class CommentsServiceImpl implements CommentsService {
         return commentsMapper.toCommentsDtoResponse(comment);
     }
 
+    @Override
     @Transactional
+    @CachePut(cacheNames = "comments", key = "#uuid")
     public CommentsDtoResponse update(UUID uuid, CommentDtoRequestUpdate commentDtoRequestUpdate) {
         Optional<Comment> commentOptional = commentsRepository.findById(uuid);
         if (commentOptional.isPresent()) {
@@ -72,7 +85,9 @@ public class CommentsServiceImpl implements CommentsService {
         }
     }
 
+    @Override
     @Transactional
+    @CacheEvict(cacheNames = "comments", key = "#uuid")
     public void delete(UUID uuid) {
         int commentDeletedCount = commentsRepository.deleteIfExists(uuid);
 

@@ -30,6 +30,13 @@ public class GlobalExceptionHandler {
         return errorDetail;
     }
 
+    @ExceptionHandler(CacheException.class)
+    private ProblemDetail handleCacheException(CacheException exception) {
+        ProblemDetail errorDetail = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        errorDetail.setProperty(DESCRIPTION, "Please enter a policy of LRU, LFU");
+        return errorDetail;
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleUnknownException(Exception exception) {
         ErrorDetails errorDetails = new ErrorDetails(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage(), "Unknown internal server error.");
