@@ -75,7 +75,7 @@ public class CreateData {
                 .build();
     }
 
-    public static Comment createComment(){
+    public static Comment createComment() {
         return Comment.builder()
                 .id(createRandomUUID())
                 .time(Instant.parse(TIME_ZONE))
@@ -87,7 +87,7 @@ public class CreateData {
                 .build();
     }
 
-    public static Comment updateComment(){
+    public static Comment updateComment() {
         return Comment.builder()
                 .id(createRandomUUID())
                 .time(Instant.parse(TIME_ZONE))
@@ -99,14 +99,14 @@ public class CreateData {
                 .build();
     }
 
-    public static CommentsDtoResponse createCommentsDtoResponse(){
+    public static CommentsDtoResponse createCommentsDtoResponse() {
         return CommentsDtoResponse.builder()
                 .text(TEST_TEXT)
                 .username(USER_TEST)
                 .build();
     }
 
-    public static CommentDtoRequest createCommentDtoRequest(){
+    public static CommentDtoRequest createCommentDtoRequest() {
         return CommentDtoRequest.builder()
                 .text(TEST_TEXT)
                 .username(USER_TEST)

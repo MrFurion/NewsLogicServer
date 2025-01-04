@@ -1,11 +1,13 @@
 package by.clevertec.integration.repositories;
 
+import by.clevertec.config.JpaConfig;
 import by.clevertec.repositories.NewsRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -15,6 +17,7 @@ import java.util.UUID;
 @ActiveProfiles("testcontainers")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Sql(scripts = {"classpath:db/data.sql"})
+@Import(JpaConfig.class)
 class NewsRepositoryIntegrationTest {
 
     @Autowired

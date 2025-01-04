@@ -48,7 +48,6 @@ public class NewsServiceImpl implements NewsService {
     }
 
     public Page<NewsDtoResponse> findByIdWithAllComments(UUID uuid, int page, int size) {
-
         Pageable pageable = PageRequest.of(page, size);
         News news = newsRepository.findById(uuid).orElseThrow(NewsNotFoundException::new);
 
@@ -64,14 +63,8 @@ public class NewsServiceImpl implements NewsService {
         return new PageImpl<>(Collections.singletonList(newsDtoResponse), pageable, 1);
     }
 
-    public List<NewsDtoResponse> fullTextSearchByTitleAndTextField(String searchElement,
-                                            int page,
-                                            int pageSize,
-                                            String searchableFields,
-                                            String sortField,
-                                            SortOrder sortOrder
-                                            ) {
-
+    public List<NewsDtoResponse> fullTextSearchByTitleAndTextField(String searchElement, int page, int pageSize,
+                                            String searchableFields, String sortField, SortOrder sortOrder) {
         List<News> news = newsLuceneRepository
                 .fullTextSearch(searchElement, page, pageSize, List.of(searchableFields), sortField, sortOrder);
         return newsMapper.toNewsDtoResponseList(news);
@@ -89,9 +82,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
-    public NewsDtoResponse update(NewsDtoRequestUpdate
-                                          newsDtoRequestUpdate, UUID uuid) {
-
+    public NewsDtoResponse update(NewsDtoRequestUpdate newsDtoRequestUpdate, UUID uuid) {
         Optional<News> newsOptional = newsRepository.findById(uuid);
         if (newsOptional.isPresent()) {
             Optional.ofNullable(newsDtoRequestUpdate.getTitle()).ifPresent(newsOptional.get()::setTitle);

@@ -38,13 +38,9 @@ public class CommentsServiceImpl implements CommentsService {
         return commentsMapper.toCommentsDtoResponse(comment);
     }
 
-    public List<CommentsDtoResponse> fullTextSearchByTextAndUsernameField(String searchElement,
-                                                                          int page,
-                                                                          int pageSize,
-                                                                          String searchableFields,
-                                                                          String sortField,
-                                                                          SortOrder sortOrder
-    ) {
+    public List<CommentsDtoResponse> fullTextSearchByTextAndUsernameField(String searchElement, int page, int pageSize,
+                                                                          String searchableFields, String sortField,
+                                                                          SortOrder sortOrder) {
         List<Comment> comments = commentsLuceneRepository
                 .fullTextSearch(searchElement, page, pageSize, List.of(searchableFields), sortField, sortOrder);
         return commentsMapper.toCommentsDtoResponseList(comments);
@@ -52,7 +48,6 @@ public class CommentsServiceImpl implements CommentsService {
 
     @Transactional
     public CommentsDtoResponse create(UUID newsUuid, CommentDtoRequest commentDtoRequest) {
-
         Comment comment = commentsMapper.toComment(commentDtoRequest);
         //TODO get userName out of context
         comment.setTime(Instant.now());

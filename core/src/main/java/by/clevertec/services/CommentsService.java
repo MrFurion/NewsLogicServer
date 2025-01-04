@@ -10,9 +10,6 @@ import java.util.UUID;
 
 /**
  * The CommentsService interface defines the contract for services related to comments operations.
- * This includes methods for retrieving, creating, updating, and deleting comments.
- * The implementation of this interface is expected to provide the actual business logic
- * for handling comments data in the application.
  */
 public interface CommentsService {
 
@@ -41,14 +38,9 @@ public interface CommentsService {
      * @return a list of {@code CommentsDtoResponse} objects representing the search results.
      *         Each object contains information about a comment that matches the search criteria.
      */
-    List<CommentsDtoResponse> fullTextSearchByTextAndUsernameField(String searchElement,
-                                                                   int page,
-                                                                   int pageSize,
-                                                                   String searchableFields,
-                                                                   String sortField,
-                                                                   SortOrder sortOrder
-    );
-
+    List<CommentsDtoResponse> fullTextSearchByTextAndUsernameField(String searchElement, int page, int pageSize,
+                                                                   String searchableFields, String sortField,
+                                                                   SortOrder sortOrder);
 
     /**
      * Create new comment with use data of CommentDtoRequest and News uuid.
