@@ -36,26 +36,29 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class NewsServiceImpl implements NewsService {
 
+    private static final String NEWS_NOT_FOUND = "News not found ";
+    private static final String CACHE_NAME_FOR_NEWS = "news";
+
     private final NewsRepository newsRepository;
     private final NewsMapper newsMapper;
     private final NewsLuceneRepository newsLuceneRepository;
 
     @Override
-    @Cacheable(cacheNames = "news", key = "#id")
+    @Cacheable(cacheNames = CACHE_NAME_FOR_NEWS, key = "#id")
     public NewsDtoResponse findById(UUID id) {
         News news = newsRepository.findById(id).orElseThrow(NewsNotFoundException::new);
         return newsMapper.toNewsDtoResponse(news);
     }
 
     @Override
-    @Cacheable(cacheNames = "news", key = "#pageable")
+    @Cacheable(cacheNames = CACHE_NAME_FOR_NEWS, key = "#pageable")
     public Page<NewsDtoResponse> findAll(Pageable pageable) {
         Page<News> newsPage = newsRepository.findAll(pageable);
         return newsPage.map(newsMapper::toNewsDtoResponse);
     }
 
     @Override
-    @Cacheable(cacheNames = "news", key = "#page + '_' + #size")
+    @Cacheable(cacheNames = CACHE_NAME_FOR_NEWS, key = "#page + '_' + #size")
     public Page<NewsDtoResponse> findByIdWithAllComments(UUID uuid, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         News news = newsRepository.findById(uuid).orElseThrow(NewsNotFoundException::new);
@@ -73,9 +76,9 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    @Cacheable(cacheNames = "news", key = "T(String).format('%s-%d-%d-%s-%s-%s', " +
-                                          "#searchElement, #pageStart, #pageSize, " +
-                                          "#searchableFields, #sortField, #sortOrder)")
+    @Cacheable(cacheNames = CACHE_NAME_FOR_NEWS, key = "T(String).format('%s-%d-%d-%s-%s-%s', " +
+                                                       "#searchElement, #pageStart, #pageSize, " +
+                                                       "#searchableFields, #sortField, #sortOrder)")
     public List<NewsDtoResponse> fullTextSearchByTitleAndTextField(String searchElement, int pageStart, int pageSize,
                                                                    String searchableFields, String sortField, SortOrder sortOrder) {
         List<News> news = newsLuceneRepository
@@ -85,7 +88,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
-    @CachePut(cacheNames = "news", key = "#result.id")
+    @CachePut(cacheNames = CACHE_NAME_FOR_NEWS, key = "#result.id")
     public NewsDtoResponse create(NewsDtoRequest newsDtoRequest) {
         News news = newsMapper.toNews(newsDtoRequest);
         news.setTime(Instant.now());
@@ -96,7 +99,7 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     @Transactional
-    @CachePut(cacheNames = "news", key = "#uuid")
+    @CachePut(cacheNames = CACHE_NAME_FOR_NEWS, key = "#uuid")
     public NewsDtoResponse update(NewsDtoRequestUpdate newsDtoRequestUpdate, UUID uuid) {
         Optional<News> newsOptional = newsRepository.findById(uuid);
         if (newsOptional.isPresent()) {
@@ -107,19 +110,19 @@ public class NewsServiceImpl implements NewsService {
                     newsOptional.get().getTime());
             return newsMapper.toNewsDtoResponse(newsOptional.get());
         } else {
-            log.error("News not found " + uuid);
+            log.error(NEWS_NOT_FOUND, uuid);
             throw new NewsNotFoundException();
         }
     }
 
     @Override
     @Transactional
-    @CacheEvict(cacheNames = "news", key = "#uuid")
+    @CacheEvict(cacheNames = CACHE_NAME_FOR_NEWS, key = "#uuid")
     public void delete(UUID uuid) {
         int deletedCount = newsRepository.deleteIfExists(uuid);
 
         if (deletedCount == 0) {
-            log.error("News not found with id {}", uuid);
+            log.error(NEWS_NOT_FOUND, uuid);
             throw new NewsNotFoundException();
         }
         log.info("News deleted successfully with id {}", uuid);

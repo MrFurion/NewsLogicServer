@@ -29,3 +29,9 @@ cache:
   default:
     type: lfu
     capacity: 200
+
+#starter-log
+  performance:
+    monitor:
+      enabled: true
+      minExecutionTime: 0

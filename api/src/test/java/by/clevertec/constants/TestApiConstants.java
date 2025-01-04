@@ -2,9 +2,9 @@ package by.clevertec.constants;
 
 import org.hibernate.search.engine.search.sort.dsl.SortOrder;
 
-public final class Constants {
+public final class TestApiConstants {
 
-    private Constants() {
+    private TestApiConstants() {
     }
 
     public static final String NEWS_ID = "/news/{id}";

@@ -17,14 +17,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 import java.util.UUID;
 
-import static by.clevertec.constants.Constants.COMMENTS_UUID;
-import static by.clevertec.constants.Constants.COMMENT_CREATED_SUCCESSFULLY;
-import static by.clevertec.constants.Constants.FIELDS;
-import static by.clevertec.constants.Constants.MAX_RESULTS;
-import static by.clevertec.constants.Constants.QUERY;
-import static by.clevertec.constants.Constants.SORT_BY;
-import static by.clevertec.constants.Constants.SORT_ORDER;
-import static by.clevertec.constants.Constants.START_INDEX;
+import static by.clevertec.constants.TestApiConstants.COMMENTS_UUID;
+import static by.clevertec.constants.TestApiConstants.COMMENT_CREATED_SUCCESSFULLY;
+import static by.clevertec.constants.TestApiConstants.FIELDS;
+import static by.clevertec.constants.TestApiConstants.MAX_RESULTS;
+import static by.clevertec.constants.TestApiConstants.QUERY;
+import static by.clevertec.constants.TestApiConstants.SORT_BY;
+import static by.clevertec.constants.TestApiConstants.SORT_ORDER;
+import static by.clevertec.constants.TestApiConstants.START_INDEX;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -70,7 +70,7 @@ class CommentControllerTest {
     }
 
     @Test
-    void searchCommentsByTextAndUsername_shouldReturnFilteredComments() throws Exception {
+    void searchCommentsByTextAndUsernameShouldReturnFilteredComments() throws Exception {
         // given
         List<CommentsDtoResponse> commentsDtoResponses = List.of(
                 TestCreateData.createDataCommentsDtoResponse(),

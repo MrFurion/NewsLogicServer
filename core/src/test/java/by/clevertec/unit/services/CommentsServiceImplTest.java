@@ -23,12 +23,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static by.clevertec.constants.Constants.PAGE;
-import static by.clevertec.constants.Constants.PAGE_SIZE;
-import static by.clevertec.constants.Constants.SEARCHABLE_FIELDS;
-import static by.clevertec.constants.Constants.SEARCH_ELEMENT;
-import static by.clevertec.constants.Constants.SORT_FIELD;
-import static by.clevertec.constants.Constants.SORT_ORDER;
+import static by.clevertec.constants.TestCoreConstants.PAGE;
+import static by.clevertec.constants.TestCoreConstants.PAGE_SIZE;
+import static by.clevertec.constants.TestCoreConstants.SEARCHABLE_FIELDS;
+import static by.clevertec.constants.TestCoreConstants.SEARCH_ELEMENT;
+import static by.clevertec.constants.TestCoreConstants.SORT_FIELD;
+import static by.clevertec.constants.TestCoreConstants.SORT_ORDER;
 import static org.hibernate.search.util.common.impl.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -55,7 +55,7 @@ class CommentsServiceImplTest {
     private CommentsServiceImpl commentsServiceImpl;
 
     @Test
-    void findById_WhenIdExists() {
+    void findByIdWhenIdExists() {
 
         //given
         Comment comment = CreateData.createComment();
@@ -72,7 +72,7 @@ class CommentsServiceImplTest {
     }
 
     @Test
-    void findById_WhenIdDoesNotExist() {
+    void findByIdWhenIdDoesNotExist() {
 
         //given
         UUID id = CreateData.createRandomUUID();
@@ -109,7 +109,7 @@ class CommentsServiceImplTest {
     }
 
     @Test
-    void update_WhenIdExists() {
+    void updateWhenIdExists() {
 
         //given
         Comment expectedComment = CreateData.createComment();
@@ -132,7 +132,7 @@ class CommentsServiceImplTest {
     }
 
     @Test
-    void update_WhenIdDoesNotExist() {
+    void updateWhenIdDoesNotExist() {
 
         //given
         UUID id = CreateData.createRandomUUID();
@@ -146,7 +146,7 @@ class CommentsServiceImplTest {
     }
 
     @Test
-    void delete_WhenIdExists() {
+    void deleteWhenIdExists() {
 
         //given
         UUID existingId = CreateData.createRandomUUID();
@@ -161,7 +161,7 @@ class CommentsServiceImplTest {
     }
 
     @Test
-    void delete_WhenIdDoesNotExist() {
+    void deleteWhenIdDoesNotExist() {
 
         //given
         UUID nonExistentId = CreateData.createRandomUUID();
@@ -176,7 +176,7 @@ class CommentsServiceImplTest {
     }
 
     @Test
-    void fullTextSearchByTextAndUsernameField_shouldReturnMappedDtoList() {
+    void fullTextSearchByTextAndUsernameFieldShouldReturnMappedDtoList() {
         //given
         Comment comment1 = CreateData.createComment();
         Comment comment2 = CreateData.updateComment();

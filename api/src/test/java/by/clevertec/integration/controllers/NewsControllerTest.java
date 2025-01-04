@@ -22,19 +22,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static by.clevertec.constants.Constants.FIELDS;
-import static by.clevertec.constants.Constants.MAX_RESULTS;
-import static by.clevertec.constants.Constants.NEWS;
-import static by.clevertec.constants.Constants.NEWS_CREATED_SUCCESSFULLY;
-import static by.clevertec.constants.Constants.NEWS_ID;
-import static by.clevertec.constants.Constants.PAGE;
-import static by.clevertec.constants.Constants.QUERY;
-import static by.clevertec.constants.Constants.SIZE;
-import static by.clevertec.constants.Constants.SORT_BY;
-import static by.clevertec.constants.Constants.SORT_ORDER;
-import static by.clevertec.constants.Constants.START_INDEX;
-import static by.clevertec.constants.Constants.UPDATED_TEXT_OF_THE_NEWS;
-import static by.clevertec.constants.Constants.UPDATED_TITLE;
+import static by.clevertec.constants.TestApiConstants.FIELDS;
+import static by.clevertec.constants.TestApiConstants.MAX_RESULTS;
+import static by.clevertec.constants.TestApiConstants.NEWS;
+import static by.clevertec.constants.TestApiConstants.NEWS_CREATED_SUCCESSFULLY;
+import static by.clevertec.constants.TestApiConstants.NEWS_ID;
+import static by.clevertec.constants.TestApiConstants.PAGE;
+import static by.clevertec.constants.TestApiConstants.QUERY;
+import static by.clevertec.constants.TestApiConstants.SIZE;
+import static by.clevertec.constants.TestApiConstants.SORT_BY;
+import static by.clevertec.constants.TestApiConstants.SORT_ORDER;
+import static by.clevertec.constants.TestApiConstants.START_INDEX;
+import static by.clevertec.constants.TestApiConstants.UPDATED_TEXT_OF_THE_NEWS;
+import static by.clevertec.constants.TestApiConstants.UPDATED_TITLE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -76,7 +76,7 @@ class NewsControllerTest {
     }
 
     @Test
-    void findAllNews_shouldReturnPagedNews() throws Exception {
+    void findAllNewsShouldReturnPagedNews() throws Exception {
 
         // given
         NewsDtoResponse news1 = TestCreateData.createDataNewsDtoResponse();
@@ -105,7 +105,7 @@ class NewsControllerTest {
     }
 
     @Test
-    void searchNewsByTitleAndText_shouldReturnSearchedNews() throws Exception {
+    void searchNewsByTitleAndTextShouldReturnSearchedNews() throws Exception {
         // given
         NewsDtoResponse news1 = TestCreateData.createDataNewsDtoResponse();
         NewsDtoResponse news2 = TestCreateData.createDataNewsDtoResponse();
@@ -137,7 +137,7 @@ class NewsControllerTest {
     }
 
     @Test
-    void findAllNewsWithComments_shouldReturnNewsWithComments() throws Exception {
+    void findAllNewsWithCommentsShouldReturnNewsWithComments() throws Exception {
         // given
         UUID newsId = UUID.randomUUID();
         Page<NewsDtoResponse> newsPage = new PageImpl<>(List.of(
