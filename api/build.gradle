@@ -18,7 +18,10 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-dependencies {implementation project(':core')}
+dependencies {
+    implementation project(':core')
+    implementation project(":common")
+}
 
 test {
     useJUnitPlatform()

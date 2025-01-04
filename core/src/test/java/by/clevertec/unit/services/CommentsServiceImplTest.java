@@ -12,7 +12,6 @@ import by.clevertec.models.News;
 import by.clevertec.repositories.CommentsRepository;
 import by.clevertec.repositories.NewsRepository;
 import by.clevertec.services.impl.CommentsServiceImpl;
-import org.hibernate.search.engine.search.sort.dsl.SortOrder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,7 +19,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

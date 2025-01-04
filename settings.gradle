@@ -1,4 +1,5 @@
 rootProject.name = 'NewsLogicServer'
 include 'core'
 include 'api'
+include 'common'
 

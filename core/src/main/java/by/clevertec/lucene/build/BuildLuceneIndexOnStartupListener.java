@@ -25,6 +25,7 @@ public class BuildLuceneIndexOnStartupListener
         log.info("Started Initializing Indexes");
         MassIndexer massIndexer = Search.session( entityManager ).massIndexer();
 
+        //TODO Make in properties file
         massIndexer.idFetchSize(100)
                 .batchSizeToLoadObjects(25)
                 .threadsToLoadObjects(4);
