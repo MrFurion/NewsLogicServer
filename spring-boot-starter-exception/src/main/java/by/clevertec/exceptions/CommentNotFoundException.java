@@ -1,4 +1,4 @@
-package by.clevertec.exception;
+package by.clevertec.exceptions;
 
 public class CommentNotFoundException extends GlobalException{
     public CommentNotFoundException() {

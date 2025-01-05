@@ -3,4 +3,5 @@ include 'core'
 include 'api'
 include 'common'
 include 'spring-boot-starter-logger'
+include 'spring-boot-starter-exception'
 

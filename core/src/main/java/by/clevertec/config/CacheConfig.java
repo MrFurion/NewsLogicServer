@@ -2,7 +2,7 @@ package by.clevertec.config;
 
 import by.clevertec.cache.policy.LFUCache;
 import by.clevertec.cache.policy.LRUCache;
-import by.clevertec.exception.CacheException;
+import by.clevertec.exceptions.CacheException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;

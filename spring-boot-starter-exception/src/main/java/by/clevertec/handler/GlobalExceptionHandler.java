@@ -1,5 +1,10 @@
-package by.clevertec.exception;
+package by.clevertec.handler;
 
+import by.clevertec.exceptions.CacheException;
+import by.clevertec.exceptions.CommentNotFoundException;
+import by.clevertec.exceptions.NewsNotFoundException;
+import by.clevertec.model.ErrorDetails;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +15,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static by.clevertec.util.ExtracterErrorMessage.extractErrorMessage;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -55,6 +62,16 @@ public class GlobalExceptionHandler {
 
         ErrorDetails errorDetails = new ErrorDetails(HttpStatus.BAD_REQUEST, "Validation failed", "Validation failed for one or more fields");
         errorDetails.setErrors(errors);
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        String errorMessage = ex.getMessage();
+        String userMessage = extractErrorMessage(errorMessage);
+
+        // Возвращаем более короткое и понятное сообщение
+        ErrorDetails errorDetails = new ErrorDetails(HttpStatus.BAD_REQUEST, userMessage, "Data integrity violation.");
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 }
