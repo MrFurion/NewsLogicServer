@@ -22,4 +22,13 @@ public final class TestApiConstants {
     public static final String FIELDS = "title";
     public static final String SORT_BY = "sort_title";
     public static final SortOrder SORT_ORDER = SortOrder.ASC;
+    public static final String HTTP_LOCALHOST_8080_NEWS = "http://localhost:8080/news/";
+    public static final String CONTENT_TYPE = "Content-Type";
+    public static final String APPLICATION_JSON = "application/json";
+    public static final String PAGE_STRING = "page";
+    public static final String SIZE_STRING = "size";
+    public static final String LOCALHOST_8080_COMMENTS = "http://localhost:8080/comments/";
+    public static final String SUCCESSFULLY_CREATED_THE_COMMENT = "Successfully created the comment";
+    public static final String COMMENTS = "/comments/";
+    public static final String NOT_FOUND_STRING = "Not Found";
 }

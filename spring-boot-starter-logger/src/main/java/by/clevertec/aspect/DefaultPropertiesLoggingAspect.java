@@ -13,4 +13,3 @@ public class DefaultPropertiesLoggingAspect {
 
     private long minExecutionTime = 100;
 }
-

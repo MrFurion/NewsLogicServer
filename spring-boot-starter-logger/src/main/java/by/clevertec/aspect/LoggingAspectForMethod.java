@@ -63,4 +63,3 @@ public class LoggingAspectForMethod {
         return result;
     }
 }
-
