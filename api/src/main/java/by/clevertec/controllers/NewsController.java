@@ -85,6 +85,7 @@ public class NewsController {
                     @ApiResponse(responseCode = NOT_FOUND, description = NEWS_NOT_FOUND,
                             content = @Content(mediaType = APPLICATION_JSON))
             })
+
     @MonitorPerformance
     @GetMapping("/{id}")
     public ResponseEntity<NewsDtoResponse> findNews(@PathVariable UUID id) {
@@ -104,6 +105,7 @@ public class NewsController {
                             content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Page.class))),
                     @ApiResponse(responseCode = BAD_REQUEST, description = "Invalid pagination parameters")
             })
+    @MonitorPerformance
     @GetMapping
     public ResponseEntity<Page<NewsDtoResponse>> findAllNews(@RequestParam(defaultValue = "0") int page,
                                                              @RequestParam(defaultValue = "5") int size) {
@@ -129,6 +131,7 @@ public class NewsController {
                     @ApiResponse(responseCode = BAD_REQUEST, description = INVALID_INPUT_PARAMETERS),
                     @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
+    @MonitorPerformance
     @GetMapping("/search")
     public ResponseEntity<List<NewsDtoResponse>> searchNewsByTitleAndText(@RequestBody String query,
                                                                           @RequestParam(defaultValue = "0") int startIndex,
@@ -156,6 +159,7 @@ public class NewsController {
                     @ApiResponse(responseCode = NOT_FOUND, description = NEWS_NOT_FOUND),
                     @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
+    @MonitorPerformance
     @GetMapping("/{id}/comments")
     public ResponseEntity<Page<NewsDtoResponse>> findAllNewsWithComments(@PathVariable UUID id,
                                                                          @RequestParam(defaultValue = "0") int page,
@@ -196,6 +200,7 @@ public class NewsController {
                     @ApiResponse(responseCode = NOT_FOUND, description = NEWS_NOT_FOUND),
                     @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
+    @MonitorPerformance
     @PutMapping("/{id}")
     public ResponseEntity<NewsDtoResponse> updateNews(@Validated @RequestBody NewsDtoRequestUpdate newsDtoRequestUpdate,
                                                       @PathVariable UUID id) {
@@ -215,6 +220,7 @@ public class NewsController {
                     @ApiResponse(responseCode = NOT_FOUND, description = NEWS_NOT_FOUND),
                     @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
+    @MonitorPerformance
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteNews(@PathVariable UUID id) {
         newsService.delete(id);

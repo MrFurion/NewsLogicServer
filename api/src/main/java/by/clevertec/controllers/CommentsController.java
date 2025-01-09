@@ -1,5 +1,6 @@
 package by.clevertec.controllers;
 
+import by.clevertec.annotation.MonitorPerformance;
 import by.clevertec.dto.request.CommentDtoRequest;
 import by.clevertec.dto.request.CommentDtoRequestUpdate;
 import by.clevertec.dto.response.CommentsDtoResponse;
@@ -73,6 +74,7 @@ public class CommentsController {
                     @ApiResponse(responseCode = NOT_FOUND, description = COMMENT_NOT_FOUND),
                     @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
+    @MonitorPerformance
     @GetMapping("/{uuid}")
     public ResponseEntity<CommentsDtoResponse> findComment(@PathVariable UUID uuid) {
         CommentsDtoResponse response = commentsService.findById(uuid);
@@ -96,6 +98,7 @@ public class CommentsController {
                     @ApiResponse(responseCode = BAD_REQUEST, description = INVALID_QUERY_PARAMETERS),
                     @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
+    @MonitorPerformance
     @GetMapping("/search")
     public ResponseEntity<List<CommentsDtoResponse>> searchCommentsByTextAndUsername(
                                                             @RequestBody String query,
@@ -122,6 +125,7 @@ public class CommentsController {
                     @ApiResponse(responseCode = BAD_REQUEST, description = INVALID_INPUT_DATA),
                     @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
+    @MonitorPerformance
     @PostMapping("/{uuid}")
     public ResponseEntity<String> createComment(@Validated @RequestBody CommentDtoRequest commentDtoRequest,
                                                 @PathVariable UUID uuid) {
@@ -143,6 +147,7 @@ public class CommentsController {
                     @ApiResponse(responseCode = NOT_FOUND, description = COMMENT_NOT_FOUND),
                     @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
+    @MonitorPerformance
     @PutMapping("/{uuid}")
     public ResponseEntity<CommentsDtoResponse> updateComment(@PathVariable UUID uuid,
                                                              @RequestBody CommentDtoRequestUpdate commentDtoRequestUpdate) {
@@ -161,8 +166,8 @@ public class CommentsController {
                     @ApiResponse(responseCode = NOT_FOUND, description = COMMENT_NOT_FOUND),
                     @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
+    @MonitorPerformance
     @DeleteMapping("/{uuid}")
-
     public ResponseEntity<String> deleteComment(@PathVariable UUID uuid) {
         commentsService.delete(uuid);
         return ResponseEntity.noContent().build();

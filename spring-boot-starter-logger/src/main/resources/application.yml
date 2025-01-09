@@ -1,0 +1,5 @@
+spring:
+performance:
+  monitor:
+    enabled: true
+    minExecutionTime: 0
