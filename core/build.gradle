@@ -18,6 +18,7 @@ dependencies {
 
 dependencies {
     implementation project(":common")
+    implementation project(":spring-boot-starter-exception")
 }
 
 test {

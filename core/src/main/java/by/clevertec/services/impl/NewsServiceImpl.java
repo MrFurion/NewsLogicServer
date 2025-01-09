@@ -4,7 +4,7 @@ package by.clevertec.services.impl;
 import by.clevertec.dto.request.NewsDtoRequest;
 import by.clevertec.dto.request.NewsDtoRequestUpdate;
 import by.clevertec.dto.response.NewsDtoResponse;
-import by.clevertec.exception.NewsNotFoundException;
+import by.clevertec.exceptions.NewsNotFoundException;
 import by.clevertec.lucene.repository.NewsLuceneRepository;
 import by.clevertec.mapper.NewsMapper;
 import by.clevertec.models.Comment;

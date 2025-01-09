@@ -3,8 +3,9 @@ package by.clevertec.services.impl;
 import by.clevertec.dto.request.CommentDtoRequest;
 import by.clevertec.dto.request.CommentDtoRequestUpdate;
 import by.clevertec.dto.response.CommentsDtoResponse;
-import by.clevertec.exception.CommentNotFoundException;
-import by.clevertec.exception.NewsNotFoundException;
+
+import by.clevertec.exceptions.CommentNotFoundException;
+import by.clevertec.exceptions.NewsNotFoundException;
 import by.clevertec.lucene.repository.CommentsLuceneRepository;
 import by.clevertec.mapper.CommentsMapper;
 import by.clevertec.models.Comment;

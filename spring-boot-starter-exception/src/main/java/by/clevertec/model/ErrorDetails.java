@@ -1,4 +1,4 @@
-package by.clevertec.exception;
+package by.clevertec.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
