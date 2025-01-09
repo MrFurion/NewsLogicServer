@@ -4,6 +4,7 @@ import by.clevertec.dto.request.CommentDtoRequest;
 import by.clevertec.dto.request.CommentDtoRequestUpdate;
 import by.clevertec.dto.response.CommentsDtoResponse;
 import by.clevertec.exception.CommentNotFoundException;
+import by.clevertec.exception.NewsNotFoundException;
 import by.clevertec.lucene.repository.CommentsLuceneRepository;
 import by.clevertec.mapper.CommentsMapper;
 import by.clevertec.models.Comment;
@@ -65,7 +66,7 @@ public class CommentsServiceImpl implements CommentsService {
         Comment comment = commentsMapper.toComment(commentDtoRequest);
         //TODO get userName out of context
         comment.setTime(Instant.now());
-        News news = newsRepository.findById(newsUuid).orElseThrow(CommentNotFoundException::new);
+        News news = newsRepository.findById(newsUuid).orElseThrow(NewsNotFoundException::new);
         comment.setNews(news);
         commentsRepository.save(comment);
         log.info("Comment created successfully at time: {}", comment.getTime());
