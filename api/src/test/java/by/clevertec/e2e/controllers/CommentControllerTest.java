@@ -19,8 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.UUID;
 
-import static by.clevertec.constants.Constants.COMMENTS_UUID;
-import static by.clevertec.constants.Constants.COMMENT_CREATED_SUCCESSFULLY;
+import static by.clevertec.constants.TestApiConstants.COMMENTS_UUID;
+import static by.clevertec.constants.TestApiConstants.COMMENT_CREATED_SUCCESSFULLY;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

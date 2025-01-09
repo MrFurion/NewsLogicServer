@@ -26,12 +26,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static by.clevertec.constants.Constants.PAGE;
-import static by.clevertec.constants.Constants.PAGE_SIZE;
-import static by.clevertec.constants.Constants.SEARCHABLE_FIELDS;
-import static by.clevertec.constants.Constants.SEARCH_ELEMENT;
-import static by.clevertec.constants.Constants.SORT_FIELD;
-import static by.clevertec.constants.Constants.SORT_ORDER;
+import static by.clevertec.constants.TestCoreConstants.PAGE;
+import static by.clevertec.constants.TestCoreConstants.PAGE_SIZE;
+import static by.clevertec.constants.TestCoreConstants.SEARCHABLE_FIELDS;
+import static by.clevertec.constants.TestCoreConstants.SEARCH_ELEMENT;
+import static by.clevertec.constants.TestCoreConstants.SORT_FIELD;
+import static by.clevertec.constants.TestCoreConstants.SORT_ORDER;
 import static org.hibernate.search.util.common.impl.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -57,7 +57,7 @@ class NewsServiceImplTest {
     private NewsServiceImpl newsServiceImpl;
 
     @Test
-    void findById_WhenIdExists() {
+    void findByIdWhenIdExists() {
 
         //given
         News news = CreateData.createNews();
@@ -75,7 +75,7 @@ class NewsServiceImplTest {
     }
 
     @Test
-    void findById_WhenIdDoesNotExist() {
+    void findByIdWhenIdDoesNotExist() {
 
         //given
         UUID id = CreateData.createRandomUUID();
@@ -110,7 +110,7 @@ class NewsServiceImplTest {
     }
 
     @Test
-    void update_WhenIdExists() {
+    void updateWhenIdExists() {
 
         //given
         News expectNews = CreateData.createNews();
@@ -132,7 +132,7 @@ class NewsServiceImplTest {
     }
 
     @Test
-    void update_WhenIdDoesNotExist() {
+    void updateWhenIdDoesNotExist() {
 
         //given
         UUID id = CreateData.createRandomUUID();
@@ -146,7 +146,7 @@ class NewsServiceImplTest {
     }
 
     @Test
-    void delete_WhenIdExists() {
+    void deleteWhenIdExists() {
 
         //given
         UUID existingId = CreateData.createRandomUUID();
@@ -162,7 +162,7 @@ class NewsServiceImplTest {
     }
 
     @Test
-    void delete_WhenIdDoesNotExist() {
+    void deleteWhenIdDoesNotExist() {
 
         //given
         UUID nonExistentId = CreateData.createRandomUUID();
@@ -177,7 +177,7 @@ class NewsServiceImplTest {
     }
 
     @Test
-    void findAll_shouldReturnMappedPage() {
+    void findAllShouldReturnMappedPage() {
         // given
         Pageable pageable = PageRequest.of(0, 10);
         News news = CreateData.createNews();
@@ -199,7 +199,7 @@ class NewsServiceImplTest {
     }
 
     @Test
-    void findByIdWithAllComments_shouldReturnNewsWithPaginatedComments() {
+    void findByIdWithAllCommentsShouldReturnNewsWithPaginatedComments() {
         //given
         UUID uuid = UUID.randomUUID();
         int page = 0;
@@ -228,7 +228,7 @@ class NewsServiceImplTest {
 
         NewsDtoResponse resultDto = result.getContent().get(0);
         assertNotNull(resultDto.getComments(), "Comments should not be null");
-        assertEquals(2, resultDto.getComments().size());
+        assertEquals(size, resultDto.getComments().size());
         assertEquals(comment1.getText(), resultDto.getComments().get(0).getText());
         assertEquals(comment2.getText(), resultDto.getComments().get(1).getText());
         Mockito.verify(newsRepository, Mockito.times(1)).findById(uuid);
@@ -236,7 +236,7 @@ class NewsServiceImplTest {
     }
 
     @Test
-    void fullTextSearchByTitleAndTextField_shouldReturnMappedDtoList() {
+    void fullTextSearchByTitleAndTextFieldShouldReturnMappedDtoList() {
         // Arrange
         News news1 = CreateData.createNews();
         News news2 = CreateData.updateNews();

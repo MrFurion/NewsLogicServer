@@ -13,7 +13,7 @@ public class Constants {
     public static final String STARTING_INDEX_OF_THE_RESULTS_DEFAULT = "The starting index of the results (default is 0)";
     public static final String MAXIMUM_NUMBER_OF_RESULTS = "The maximum number of results to return (default is 5)";
     public static final String CREATED = "201";
-    public static final String INTERNAL_SERVER_ERROR1 = "Internal server error";
+    public static final String INTERNAL_SERVER_ERROR_REPORT = "Internal server error";
     public static final String PAGE = "page";
     public static final String SIZE = "size";
     public static final String ID = "id";
@@ -32,4 +32,12 @@ public class Constants {
     public static final String INVALID_REQUEST_BODY = "Invalid request body";
     public static final String LOCATION = "Location";
     public static final String TEXT_PLAIN = "text/plain";
+    public static final String INVALID_QUERY_PARAMETERS = "Invalid query parameters";
+    public static final String INVALID_INPUT_DATA = "Invalid input data";
+    public static final String COMMENT_NOT_FOUND = "Comment not found";
+    public static final String SUCCESSFULLY_RETRIEVED_THE_COMMENT = "Successfully retrieved the comment";
+    public static final String SUCCESSFULLY_CREATED_THE_COMMENT = "Successfully created the comment";
+    public static final String SUCCESSFULLY_UPDATED_THE_COMMENT = "Successfully updated the comment";
+    public static final String SUCCESSFULLY_DELETED_THE_COMMENT = "Successfully deleted the comment";
+    public static final String UUID = "uuid";
 }

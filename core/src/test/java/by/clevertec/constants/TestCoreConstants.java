@@ -2,7 +2,7 @@ package by.clevertec.constants;
 
 import org.hibernate.search.engine.search.sort.dsl.SortOrder;
 
-public class Constants {
+public class TestCoreConstants {
     public static final String SEARCH_ELEMENT = "Sample Search";
     public static final int PAGE = 0;
     public static final int PAGE_SIZE = 10;

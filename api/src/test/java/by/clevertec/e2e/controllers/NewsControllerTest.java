@@ -22,11 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import static by.clevertec.constants.Constants.NEWS;
-import static by.clevertec.constants.Constants.NEWS_CREATED_SUCCESSFULLY;
-import static by.clevertec.constants.Constants.NEWS_ID;
-import static by.clevertec.constants.Constants.PAGE;
-import static by.clevertec.constants.Constants.SIZE;
+import static by.clevertec.constants.TestApiConstants.NEWS;
+import static by.clevertec.constants.TestApiConstants.NEWS_CREATED_SUCCESSFULLY;
+import static by.clevertec.constants.TestApiConstants.NEWS_ID;
+import static by.clevertec.constants.TestApiConstants.PAGE;
+import static by.clevertec.constants.TestApiConstants.SIZE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

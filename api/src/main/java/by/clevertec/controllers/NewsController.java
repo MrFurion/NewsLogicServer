@@ -1,5 +1,6 @@
 package by.clevertec.controllers;
 
+import by.clevertec.annotation.MonitorPerformance;
 import by.clevertec.dto.request.NewsDtoRequest;
 import by.clevertec.dto.request.NewsDtoRequestUpdate;
 import by.clevertec.dto.response.NewsDtoResponse;
@@ -40,7 +41,7 @@ import static by.clevertec.constants.Constants.FIELDS_TO_SEARCH_IN_E_G_TITLE_TEX
 import static by.clevertec.constants.Constants.FIELD_BY_WHICH_TO_SORT_THE_RESULTS_DEFAULT_IS_SORT_TITLE;
 import static by.clevertec.constants.Constants.ID;
 import static by.clevertec.constants.Constants.INTERNAL_SERVER_ERROR;
-import static by.clevertec.constants.Constants.INTERNAL_SERVER_ERROR1;
+import static by.clevertec.constants.Constants.INTERNAL_SERVER_ERROR_REPORT;
 import static by.clevertec.constants.Constants.INVALID_INPUT_PARAMETERS;
 import static by.clevertec.constants.Constants.INVALID_REQUEST_BODY;
 import static by.clevertec.constants.Constants.LOCATION;
@@ -84,6 +85,7 @@ public class NewsController {
                     @ApiResponse(responseCode = NOT_FOUND, description = NEWS_NOT_FOUND,
                             content = @Content(mediaType = APPLICATION_JSON))
             })
+    @MonitorPerformance
     @GetMapping("/{id}")
     public ResponseEntity<NewsDtoResponse> findNews(@PathVariable UUID id) {
         NewsDtoResponse newsDtoResponse = newsService.findById(id);
@@ -125,7 +127,7 @@ public class NewsController {
                     @ApiResponse(responseCode = OK, description = RETRIEVED_THE_SEARCH_RESULTS,
                             content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = NewsDtoResponse.class))),
                     @ApiResponse(responseCode = BAD_REQUEST, description = INVALID_INPUT_PARAMETERS),
-                    @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR1)
+                    @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
     @GetMapping("/search")
     public ResponseEntity<List<NewsDtoResponse>> searchNewsByTitleAndText(@RequestBody String query,
@@ -152,7 +154,7 @@ public class NewsController {
                     @ApiResponse(responseCode = OK, description = "Successfully retrieved the comments",
                             content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Page.class))),
                     @ApiResponse(responseCode = NOT_FOUND, description = NEWS_NOT_FOUND),
-                    @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR1)
+                    @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
     @GetMapping("/{id}/comments")
     public ResponseEntity<Page<NewsDtoResponse>> findAllNewsWithComments(@PathVariable UUID id,
@@ -170,8 +172,10 @@ public class NewsController {
                             headers = @Header(name = LOCATION, description = "The URI of the newly created news item"),
                             content = @Content(mediaType = TEXT_PLAIN)),
                     @ApiResponse(responseCode = BAD_REQUEST, description = INVALID_REQUEST_BODY),
-                    @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR1)
+                    @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
+
+    @MonitorPerformance
     @PostMapping
     public ResponseEntity<String> createNews(@Validated @RequestBody NewsDtoRequest newsDtoRequest) {
         NewsDtoResponse newsDtoResponse = newsService.create(newsDtoRequest);
@@ -190,7 +194,7 @@ public class NewsController {
                             content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = NewsDtoResponse.class))),
                     @ApiResponse(responseCode = BAD_REQUEST, description = INVALID_INPUT_PARAMETERS),
                     @ApiResponse(responseCode = NOT_FOUND, description = NEWS_NOT_FOUND),
-                    @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR1)
+                    @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
     @PutMapping("/{id}")
     public ResponseEntity<NewsDtoResponse> updateNews(@Validated @RequestBody NewsDtoRequestUpdate newsDtoRequestUpdate,
@@ -209,7 +213,7 @@ public class NewsController {
             responses = {
                     @ApiResponse(responseCode = NO_CONTENT, description = SUCCESSFULLY_DELETED_THE_NEWS),
                     @ApiResponse(responseCode = NOT_FOUND, description = NEWS_NOT_FOUND),
-                    @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR1)
+                    @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteNews(@PathVariable UUID id) {
