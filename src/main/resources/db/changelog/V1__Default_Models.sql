@@ -12,3 +12,10 @@ create table Comment(
                         username VARCHAR(25) not null,
                         news_id uuid REFERENCES news(id) on delete cascade
 );
+
+create table client_name (
+                             client_id uuid not null,
+                             username varchar(255),
+                             primary key (client_id, username),
+                             foreign key (client_id) references News(id) on delete cascade
+);

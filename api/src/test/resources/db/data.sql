@@ -23,3 +23,15 @@ INSERT INTO Comment (id, time, text, username, news_id) VALUES
                                                             ('eb60f90c-d92f-4b12-819f-6f3b5b2a6428', '2024-01-08', 'Very informative economic analysis.', 'economist2024', 'd2cf8c3a-8dc1-4748-a2d1-6cfaff302ecb'),
                                                             ('f16c5f3a-4b3c-42f7-87df-724f1085e016', '2024-01-09', 'Excited for the new movies this year!', 'cinemalover', '3e59a07b-d38e-4225-8009-bd88af752f90'),
                                                             ('77de489a-1ef6-40de-bbed-2b8df0a8621c', '2024-01-10', 'Tech trends are always exciting!', 'tech_guru', '847ababe-f6d7-4c1c-90d9-f432d2d7bb37');
+
+INSERT INTO client_name (client_id, username) VALUES
+                                                  ('1e1a3208-dfc5-4eb7-8d8e-1f50f31dc70a', 'Admin'),
+                                                  ('be3429c5-daae-4b6e-93fc-dcb1e5c9911b', 'Admin'),
+                                                  ('b4c92e1b-334a-46c3-8f4e-58a283a39d78', 'Admin'),
+                                                  ('7ac5f6a7-46e5-452e-9340-3545cb4c61f2', 'Admin'),
+                                                  ('3f024b2d-90cc-4c92-b9cf-623a5d3f8b64', 'Admin'),
+                                                  ('43e86f88-dae9-4e2a-8125-2d1728eb8d33', 'Admin'),
+                                                  ('58fa9b2e-7a51-4af8-9081-55d4f6358497', 'Admin'),
+                                                  ('d2cf8c3a-8dc1-4748-a2d1-6cfaff302ecb', 'Admin'),
+                                                  ('3e59a07b-d38e-4225-8009-bd88af752f90', 'Admin'),
+                                                  ('847ababe-f6d7-4c1c-90d9-f432d2d7bb37', 'Admin');

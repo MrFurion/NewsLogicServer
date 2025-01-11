@@ -4,7 +4,8 @@ import by.clevertec.data.CreateData;
 import by.clevertec.dto.request.CommentDtoRequest;
 import by.clevertec.dto.request.CommentDtoRequestUpdate;
 import by.clevertec.dto.response.CommentsDtoResponse;
-import by.clevertec.exception.CommentNotFoundException;
+
+import by.clevertec.exceptions.CommentNotFoundException;
 import by.clevertec.lucene.repository.CommentsLuceneRepository;
 import by.clevertec.mapper.CommentsMapper;
 import by.clevertec.models.Comment;
@@ -18,6 +19,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,10 +33,13 @@ import static by.clevertec.constants.TestCoreConstants.SEARCHABLE_FIELDS;
 import static by.clevertec.constants.TestCoreConstants.SEARCH_ELEMENT;
 import static by.clevertec.constants.TestCoreConstants.SORT_FIELD;
 import static by.clevertec.constants.TestCoreConstants.SORT_ORDER;
+import static by.clevertec.util.AuthenticationUsers.authenticationUsers;
+import static by.clevertec.util.SecurityContext.getUserNameFromContext;
 import static org.hibernate.search.util.common.impl.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -94,6 +101,9 @@ class CommentsServiceImplTest {
         News expectedNews = CreateData.createNews();
         UUID newsUuid = CreateData.createRandomUUID();
 
+        String userName = "TestUser";
+        authenticationUsers(userName);
+
         //when
         when(commentsMapper.toComment(commentDtoRequest)).thenReturn(expectedComment);
         when(commentsMapper.toCommentsDtoResponse(expectedComment)).thenReturn(expectedCommentDtoResponse);
@@ -110,8 +120,7 @@ class CommentsServiceImplTest {
 
     @Test
     void updateWhenIdExists() {
-
-        //given
+        // given
         Comment expectedComment = CreateData.createComment();
         Comment updateComment = CreateData.updateComment();
 
@@ -121,13 +130,23 @@ class CommentsServiceImplTest {
         CommentDtoRequestUpdate commentDtoRequestUpdate = CreateData.updateDtoRequestComment();
         CommentsDtoResponse expectResponse = CreateData.createCommentsDtoResponse();
 
-        //when
+        String expectedUserName = "admin";
+        expectedComment.setUsername(expectedUserName);
+        String userName = "admin";
+        Authentication authentication = mock(Authentication.class);
+        when(authentication.getName()).thenReturn(userName);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        // when
         when(commentsRepository.findById(id)).thenReturn(Optional.of(expectedComment));
         when(commentsRepository.save(expectedComment)).thenReturn(updateComment);
         when(commentsMapper.toCommentsDtoResponse(any(Comment.class))).thenReturn(expectResponse);
-        CommentsDtoResponse actualResponse = commentsServiceImpl.update(id, commentDtoRequestUpdate);
 
-        //then
+        // then
+        CommentsDtoResponse actualResponse = commentsServiceImpl.update(id, commentDtoRequestUpdate);
+        assertEquals(expectedUserName, getUserNameFromContext());
         assertEquals(expectResponse.getText(), actualResponse.getText());
     }
 
@@ -150,14 +169,16 @@ class CommentsServiceImplTest {
 
         //given
         UUID existingId = CreateData.createRandomUUID();
+        String userName = "user123";
         int deleteOperationsCountExpect = 1;
+        authenticationUsers(userName);
 
         //when
-        when(commentsRepository.deleteIfExists(existingId)).thenReturn(deleteOperationsCountExpect);
+        when(commentsRepository.deleteIfExists(existingId, userName)).thenReturn(deleteOperationsCountExpect);
         commentsServiceImpl.delete(existingId);
 
         //then
-        verify(commentsRepository).deleteIfExists(existingId);
+        verify(commentsRepository).deleteIfExists(existingId, userName);
     }
 
     @Test
@@ -165,14 +186,16 @@ class CommentsServiceImplTest {
 
         //given
         UUID nonExistentId = CreateData.createRandomUUID();
+        String userName = "user123";
         int deleteOperationsCountExpect = 0;
+        authenticationUsers(userName);
 
         //when
-        when(commentsRepository.deleteIfExists(nonExistentId)).thenReturn(deleteOperationsCountExpect);
+        when(commentsRepository.deleteIfExists(nonExistentId, userName)).thenReturn(deleteOperationsCountExpect);
 
         //then
         assertThrows(CommentNotFoundException.class, () -> commentsServiceImpl.delete(nonExistentId));
-        verify(commentsRepository).deleteIfExists(nonExistentId);
+        verify(commentsRepository).deleteIfExists(nonExistentId, userName);
     }
 
     @Test

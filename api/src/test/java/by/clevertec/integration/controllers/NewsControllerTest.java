@@ -6,10 +6,12 @@ import by.clevertec.dto.request.NewsDtoRequest;
 import by.clevertec.dto.request.NewsDtoRequestUpdate;
 import by.clevertec.dto.response.NewsDtoResponse;
 import by.clevertec.models.Comment;
+import by.clevertec.services.JwtService;
 import by.clevertec.services.NewsService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -48,9 +50,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(NewsController.class)
+@WebMvcTest(controllers = NewsController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
 @RequiredArgsConstructor
 class NewsControllerTest {
+
+    @MockitoBean
+    private JwtService jwtService;
 
     @Autowired
     MockMvc mockMvc;

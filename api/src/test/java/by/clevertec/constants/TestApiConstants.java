@@ -11,7 +11,7 @@ public final class TestApiConstants {
     public static final String NEWS_CREATED_SUCCESSFULLY = "News created successfully";
     public static final String NEWS = "/news";
     public static final String COMMENTS_UUID = "/comments/{uuid}";
-    public static final String COMMENT_CREATED_SUCCESSFULLY = "Comment created successfully";
+    public static final String COMMENT_CREATED_SUCCESSFULLY = "Successfully created the comment";
     public static final int PAGE = 0;
     public static final int SIZE = 5;
     public static final String UPDATED_TITLE = "Updated Title";

@@ -1,6 +1,7 @@
 package by.clevertec.controllers;
 
 import by.clevertec.annotation.MonitorPerformance;
+import by.clevertec.constants.SecurityRole;
 import by.clevertec.dto.request.NewsDtoRequest;
 import by.clevertec.dto.request.NewsDtoRequestUpdate;
 import by.clevertec.dto.response.NewsDtoResponse;
@@ -12,12 +13,14 @@ import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.search.engine.search.sort.dsl.SortOrder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -85,7 +88,7 @@ public class NewsController {
                     @ApiResponse(responseCode = NOT_FOUND, description = NEWS_NOT_FOUND,
                             content = @Content(mediaType = APPLICATION_JSON))
             })
-
+    @PreAuthorize(SecurityRole.ROLE_ADMIN_OR_JOURNALIST_OR_SUBSCRIBER)
     @MonitorPerformance
     @GetMapping("/{id}")
     public ResponseEntity<NewsDtoResponse> findNews(@PathVariable UUID id) {
@@ -105,6 +108,7 @@ public class NewsController {
                             content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Page.class))),
                     @ApiResponse(responseCode = BAD_REQUEST, description = "Invalid pagination parameters")
             })
+    @PermitAll
     @MonitorPerformance
     @GetMapping
     public ResponseEntity<Page<NewsDtoResponse>> findAllNews(@RequestParam(defaultValue = "0") int page,
@@ -131,6 +135,7 @@ public class NewsController {
                     @ApiResponse(responseCode = BAD_REQUEST, description = INVALID_INPUT_PARAMETERS),
                     @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
+    @PreAuthorize(SecurityRole.ROLE_ADMIN_OR_JOURNALIST_OR_SUBSCRIBER)
     @MonitorPerformance
     @GetMapping("/search")
     public ResponseEntity<List<NewsDtoResponse>> searchNewsByTitleAndText(@RequestBody String query,
@@ -159,6 +164,7 @@ public class NewsController {
                     @ApiResponse(responseCode = NOT_FOUND, description = NEWS_NOT_FOUND),
                     @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
+    @PermitAll
     @MonitorPerformance
     @GetMapping("/{id}/comments")
     public ResponseEntity<Page<NewsDtoResponse>> findAllNewsWithComments(@PathVariable UUID id,
@@ -178,7 +184,7 @@ public class NewsController {
                     @ApiResponse(responseCode = BAD_REQUEST, description = INVALID_REQUEST_BODY),
                     @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
-
+    @PreAuthorize(SecurityRole.ROLE_ADMIN_OR_JOURNALIST)
     @MonitorPerformance
     @PostMapping
     public ResponseEntity<String> createNews(@Validated @RequestBody NewsDtoRequest newsDtoRequest) {
@@ -200,6 +206,7 @@ public class NewsController {
                     @ApiResponse(responseCode = NOT_FOUND, description = NEWS_NOT_FOUND),
                     @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
+    @PreAuthorize(SecurityRole.ROLE_ADMIN_OR_JOURNALIST)
     @MonitorPerformance
     @PutMapping("/{id}")
     public ResponseEntity<NewsDtoResponse> updateNews(@Validated @RequestBody NewsDtoRequestUpdate newsDtoRequestUpdate,
@@ -220,6 +227,7 @@ public class NewsController {
                     @ApiResponse(responseCode = NOT_FOUND, description = NEWS_NOT_FOUND),
                     @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
+    @PreAuthorize(SecurityRole.ROLE_ADMIN_OR_JOURNALIST)
     @MonitorPerformance
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteNews(@PathVariable UUID id) {
