@@ -137,7 +137,7 @@ public class NewsController {
             })
     @PreAuthorize(SecurityRole.ROLE_ADMIN_OR_JOURNALIST_OR_SUBSCRIBER)
     @MonitorPerformance
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<List<NewsDtoResponse>> searchNewsByTitleAndText(@RequestBody String query,
                                                                           @RequestParam(defaultValue = "0") int startIndex,
                                                                           @RequestParam(defaultValue = "5") int maxResults,
