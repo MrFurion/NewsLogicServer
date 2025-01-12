@@ -103,7 +103,7 @@ public class CommentsController {
             })
     @PreAuthorize(SecurityRole.ROLE_ADMIN_OR_JOURNALIST_OR_SUBSCRIBER)
     @MonitorPerformance
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<List<CommentsDtoResponse>> searchCommentsByTextAndUsername(
                                                             @RequestBody String query,
                                                             @RequestParam(defaultValue = "0") int startIndex,

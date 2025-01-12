@@ -27,11 +27,11 @@ spring:
 #Cache configuration
 cache:
   default:
-    type: lfu
+    type: lfu #or lru
     capacity: 200
 
 #starter-log
   performance:
     monitor:
       enabled: true
-      minExecutionTime: 0
+      minExecutionTime: 0 #time of method
