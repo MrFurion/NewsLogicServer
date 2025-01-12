@@ -12,6 +12,6 @@ import java.util.UUID;
 @Repository
 public interface CommentsRepository extends JpaRepository<Comment, UUID> {
     @Modifying
-    @Query("DELETE FROM Comment c WHERE c.id = :uuid")
-    int deleteIfExists(@Param("uuid") UUID uuid);
+    @Query("DELETE FROM Comment c WHERE c.id = :uuid AND c.username = :username")
+    int deleteIfExists(@Param("uuid") UUID uuid, @Param("username") String username);
 }

@@ -12,6 +12,8 @@ import java.util.UUID;
 @Repository
 public interface NewsRepository extends JpaRepository<News, UUID> {
     @Modifying
-    @Query("DELETE FROM News n WHERE n.id = :uuid")
-    int deleteIfExists(@Param("uuid") UUID uuid);
+    @Query(value = "DELETE FROM news WHERE id = :uuid AND EXISTS (" +
+                   "SELECT 1 FROM client_name WHERE client_id = :uuid AND username = :username)",
+            nativeQuery = true)
+    int deleteIfExists(@Param("uuid") UUID uuid, @Param("username") String username);
 }

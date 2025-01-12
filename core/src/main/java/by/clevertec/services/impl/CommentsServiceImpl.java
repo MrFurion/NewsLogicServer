@@ -6,6 +6,7 @@ import by.clevertec.dto.response.CommentsDtoResponse;
 
 import by.clevertec.exceptions.CommentNotFoundException;
 import by.clevertec.exceptions.NewsNotFoundException;
+import by.clevertec.exceptions.UserNameNotFoundException;
 import by.clevertec.lucene.repository.CommentsLuceneRepository;
 import by.clevertec.mapper.CommentsMapper;
 import by.clevertec.models.Comment;
@@ -19,6 +20,9 @@ import org.hibernate.search.engine.search.sort.dsl.SortOrder;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +32,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static by.clevertec.constants.CoreConstants.COMMENT_NOT_FOUND;
+import static by.clevertec.util.SecurityContext.getUserNameFromContext;
 
 @Service
 @Transactional(readOnly = true)
@@ -65,8 +70,9 @@ public class CommentsServiceImpl implements CommentsService {
     @CachePut(cacheNames = CACHE_NAME_FOR_COMMENTS, key = "#result.id")
     public CommentsDtoResponse create(UUID newsUuid, CommentDtoRequest commentDtoRequest) {
         Comment comment = commentsMapper.toComment(commentDtoRequest);
-        //TODO get userName out of context
         comment.setTime(Instant.now());
+        String userName = getUserNameFromContext();
+        comment.setUsername(userName);
         News news = newsRepository.findById(newsUuid).orElseThrow(NewsNotFoundException::new);
         comment.setNews(news);
         commentsRepository.save(comment);
@@ -78,24 +84,28 @@ public class CommentsServiceImpl implements CommentsService {
     @Transactional
     @CachePut(cacheNames = CACHE_NAME_FOR_COMMENTS, key = KAY_FOR_CACHE_COMMENTS)
     public CommentsDtoResponse update(UUID uuid, CommentDtoRequestUpdate commentDtoRequestUpdate) {
-        Optional<Comment> commentOptional = commentsRepository.findById(uuid);
-        if (commentOptional.isPresent()) {
-            Optional.ofNullable(commentDtoRequestUpdate.getText()).ifPresent(commentOptional.get()::setText);
-            Comment commentUpdate = commentsRepository.save(commentOptional.get());
-            log.info("Comment updated successfully at time: {}", commentUpdate.getTime());
-            return commentsMapper.toCommentsDtoResponse(commentOptional.get());
-        } else {
-            log.info(COMMENT_NOT_FOUND + uuid);
-            throw new CommentNotFoundException();
+        Comment comment = commentsRepository.findById(uuid)
+                .orElseThrow(() -> {
+                    log.info(COMMENT_NOT_FOUND + uuid);
+                    return new CommentNotFoundException();
+                });
+
+        Optional.ofNullable(commentDtoRequestUpdate.getText()).ifPresent(comment::setText);
+
+        if (!getUserNameFromContext().equals(comment.getUsername())) {
+            throw new UserNameNotFoundException();
         }
+
+        Comment updatedComment = commentsRepository.save(comment);
+        log.info("Comment updated successfully at time: {}", updatedComment.getTime());
+        return commentsMapper.toCommentsDtoResponse(updatedComment);
     }
 
     @Override
     @Transactional
     @CacheEvict(cacheNames = CACHE_NAME_FOR_COMMENTS, key = KAY_FOR_CACHE_COMMENTS)
     public void delete(UUID uuid) {
-        int commentDeletedCount = commentsRepository.deleteIfExists(uuid);
-
+        int commentDeletedCount = commentsRepository.deleteIfExists(uuid, getUserNameFromContext());
         if (commentDeletedCount == 0) {
             log.info(COMMENT_NOT_FOUND + uuid);
             throw new CommentNotFoundException();

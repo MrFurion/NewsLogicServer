@@ -1,6 +1,7 @@
 package by.clevertec.controllers;
 
 import by.clevertec.annotation.MonitorPerformance;
+import by.clevertec.constants.SecurityRole;
 import by.clevertec.dto.request.CommentDtoRequest;
 import by.clevertec.dto.request.CommentDtoRequestUpdate;
 import by.clevertec.dto.response.CommentsDtoResponse;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.search.engine.search.sort.dsl.SortOrder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -74,6 +76,7 @@ public class CommentsController {
                     @ApiResponse(responseCode = NOT_FOUND, description = COMMENT_NOT_FOUND),
                     @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
+    @PreAuthorize(SecurityRole.ROLE_ADMIN_OR_JOURNALIST_OR_SUBSCRIBER)
     @MonitorPerformance
     @GetMapping("/{uuid}")
     public ResponseEntity<CommentsDtoResponse> findComment(@PathVariable UUID uuid) {
@@ -98,6 +101,7 @@ public class CommentsController {
                     @ApiResponse(responseCode = BAD_REQUEST, description = INVALID_QUERY_PARAMETERS),
                     @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
+    @PreAuthorize(SecurityRole.ROLE_ADMIN_OR_JOURNALIST_OR_SUBSCRIBER)
     @MonitorPerformance
     @GetMapping("/search")
     public ResponseEntity<List<CommentsDtoResponse>> searchCommentsByTextAndUsername(
@@ -125,6 +129,7 @@ public class CommentsController {
                     @ApiResponse(responseCode = BAD_REQUEST, description = INVALID_INPUT_DATA),
                     @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
+    @PreAuthorize(SecurityRole.ROLE_ADMIN_OR_SUBSCRIBER)
     @MonitorPerformance
     @PostMapping("/{uuid}")
     public ResponseEntity<String> createComment(@Validated @RequestBody CommentDtoRequest commentDtoRequest,
@@ -147,6 +152,7 @@ public class CommentsController {
                     @ApiResponse(responseCode = NOT_FOUND, description = COMMENT_NOT_FOUND),
                     @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
+    @PreAuthorize(SecurityRole.ROLE_ADMIN_OR_SUBSCRIBER)
     @MonitorPerformance
     @PutMapping("/{uuid}")
     public ResponseEntity<CommentsDtoResponse> updateComment(@PathVariable UUID uuid,
@@ -166,6 +172,7 @@ public class CommentsController {
                     @ApiResponse(responseCode = NOT_FOUND, description = COMMENT_NOT_FOUND),
                     @ApiResponse(responseCode = INTERNAL_SERVER_ERROR, description = INTERNAL_SERVER_ERROR_REPORT)
             })
+    @PreAuthorize(SecurityRole.ROLE_ADMIN_OR_SUBSCRIBER)
     @MonitorPerformance
     @DeleteMapping("/{uuid}")
     public ResponseEntity<String> deleteComment(@PathVariable UUID uuid) {

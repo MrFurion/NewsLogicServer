@@ -34,6 +34,7 @@ import static by.clevertec.constants.TestApiConstants.PAGE_STRING;
 import static by.clevertec.constants.TestApiConstants.SIZE_STRING;
 import static by.clevertec.util.ExtractNews.extractNewsIdFromResponse;
 import static by.clevertec.util.ExtractNews.newsIdForDelete;
+import static by.clevertec.util.JwtTokenUtil.buildToken;
 import static by.clevertec.util.LoaderJson.loadJsonFromFile;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -61,25 +62,30 @@ class NewsControllerWiremockTest {
     private static final String NEWS = "/news/";
 
     RestTemplate restTemplate = new RestTemplate();
+    HttpHeaders headers = new HttpHeaders();
+
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(8080);
 
     @Test
     void findNewsTest() throws JSONException, IOException {
-        //given
+        // given
         UUID testId = UUID.fromString("c5aadb64-1db1-4e5c-91ad-1b3c1d154af1");
         String expectedJson = loadJsonFromFile("json/expectedJsonForNews.json");
         String mockResponse = loadJsonFromFile("json/mockResponseForNews.json");
         String testIdStr = testId.toString();
 
-        //when
+        // when
         stubFor(get(urlPathEqualTo(NEWS + testIdStr))
                 .willReturn(okJson(mockResponse)));
 
-        String url = HTTP_LOCALHOST_8080_NEWS + testIdStr;
-        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        headers.set("Authorization", "Bearer " + buildToken());
+        HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        //then
+        String url = HTTP_LOCALHOST_8080_NEWS + testIdStr;
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+
+        // then
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         JSONAssert.assertEquals(expectedJson, response.getBody(), JSONCompareMode.LENIENT);
@@ -141,7 +147,7 @@ class NewsControllerWiremockTest {
                 .willReturn(okJson(mockResponse).withHeader(CONTENT_TYPE, APPLICATION_JSON)));
 
         String url = "http://localhost:8080/news";
-        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + buildToken());
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<NewsDtoRequest> requestEntity = new HttpEntity<>(newsDtoRequest, headers);
 
@@ -182,7 +188,7 @@ class NewsControllerWiremockTest {
 
         String url = HTTP_LOCALHOST_8080_NEWS + newsId;
 
-        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + buildToken());
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<NewsDtoRequestUpdate> requestEntity = new HttpEntity<>(newsDtoRequestUpdate, headers);
         ResponseEntity<NewsDtoResponse> response = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, NewsDtoResponse.class);
@@ -206,8 +212,11 @@ class NewsControllerWiremockTest {
 
         String url = HTTP_LOCALHOST_8080_NEWS + nonExistentNewsId;
 
+        headers.set("Authorization", "Bearer " + buildToken());
+        HttpEntity<NewsDtoRequestUpdate> requestEntity = new HttpEntity<>(headers);
+
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class,
-                () -> restTemplate.exchange(url, HttpMethod.DELETE, null, String.class));
+                () -> restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, String.class));
 
         //then
         assertEquals(HttpStatus.NOT_FOUND.value(), exception.getStatusCode().value());

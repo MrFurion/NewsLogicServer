@@ -53,8 +53,8 @@ INSERT INTO Comment (id, time, text, username, news_id) VALUES
 ('c5aadb65-1db1-4e5c-91ad-1b3c1d154af2', '2024-12-25 13:45:00+00','Awesome content.' ,'user12300', 'c5aadb64-1db1-4e5c-91ad-1b3c1d154af1'),
 
 ('1c01bc11-8b14-4e7f-bb4a-111c2d123abc','2024-12-24 13:00:00+00' ,'Insightful!' ,'u1ser123', '1c01bc14-8b14-4e7f-bb4a-111c2d123abc'),
-('1c01bc12-8b14-4e7f-bb4a-111c2d123abc', '2024-12-24 13:05:00+00', 'I learned a lot.','us2er123', '1c01bc14-8b14-4e7f-bb4a-111c2d123abc'),
-('1c01bc13-8b14-4e7f-bb4a-111c2d123abc', '2024-12-24 13:10:00+00', 'Please add more sources.','us3er123', '1c01bc14-8b14-4e7f-bb4a-111c2d123abc'),
+('1c01bc12-8b14-4e7f-bb4a-111c2d123abc', '2024-12-24 13:05:00+00', 'I learned a lot.','Admin', '1c01bc14-8b14-4e7f-bb4a-111c2d123abc'),
+('1c01bc13-8b14-4e7f-bb4a-111c2d123abc', '2024-12-24 13:10:00+00', 'Please add more sources.','Admin', '1c01bc14-8b14-4e7f-bb4a-111c2d123abc'),
 ('1c01bc15-8b14-4e7f-bb4a-111c2d123abc','2024-12-24 13:15:00+00' ,'Interesting point of view.' ,'use4r123', '1c01bc14-8b14-4e7f-bb4a-111c2d123abc'),
 ('1c01bc16-8b14-4e7f-bb4a-111c2d123abc', '2024-12-24 13:20:00+00', 'I shared this with my friends.','user5123','1c01bc14-8b14-4e7f-bb4a-111c2d123abc' ),
 ('1c01bc17-8b14-4e7f-bb4a-111c2d123abc', '2024-12-24 13:25:00+00', 'Too simplistic.','user1623', '1c01bc14-8b14-4e7f-bb4a-111c2d123abc'),
@@ -259,3 +259,26 @@ INSERT INTO Comment (id, time, text, username, news_id) VALUES
 ('dc02bc14-7b14-4e7f-bb4a-111c2d123bdd', '2024-12-06 12:08:00+00', 'Such an informative piece, you’ve really educated me on this topic.', 'user123', 'dc02bc14-8b14-4e7f-bb4a-111c2d123bdd'),
 ('dc02bc14-9b14-4e7f-bb4a-111c2d123bdd', '2024-12-06 12:09:00+00', 'Can’t wait to see more articles like this, fantastic job!', 'user123', 'dc02bc14-8b14-4e7f-bb4a-111c2d123bdd'),
 ('dc02bc14-9b04-4e7f-bb4a-111c2d123bdd', '2024-12-06 12:10:00+00', 'This article is an absolute must-read, thank you for sharing it with us!', 'user123', 'dc02bc14-8b14-4e7f-bb4a-111c2d123bdd');
+
+INSERT INTO client_name (client_id, username)
+VALUES
+    ('c5aadb64-1db1-4e5c-91ad-1b3c1d154af1', 'Admin'),
+    ('1c01bc14-8b14-4e7f-bb4a-111c2d123abc', 'Admin'),
+    ('2a23ad56-b7cd-4c9d-a5e2-124b2d1e9def', 'Admin'),
+    ('3f34cb76-0cbb-4b1d-bc2d-143a2f9e8bcd', 'Admin'),
+    ('8c32ad98-6a45-4b2c-a9e4-112d8b1f9afe', 'Admin'),
+    ('4c01bc14-8b14-4e7f-bb4a-111c2d123bcf', 'Admin'),
+    ('6c01bc14-8b14-4e7f-bb4a-111c2d123bd0', 'Admin'),
+    ('7c01bc14-8b14-4e7f-bb4a-111c2d123bd1', 'Admin'),
+    ('8c01bc14-8b14-4e7f-bb4a-111c2d123bd2', 'Admin'),
+    ('9c01bc14-8b14-4e7f-bb4a-111c2d123bd3', 'Admin'),
+    ('0c11bc14-8b14-4e7f-bb4a-111c2d123bd4', 'Admin'),
+    ('fc02bc14-8b14-4e7f-bb4a-111c2d123bd5', 'Admin'),
+    ('ec02bc14-8b14-4e7f-bb4a-111c2d123bd6', 'Admin'),
+    ('dc02bc14-8b14-4e7f-bb4a-111c2d123bd7', 'Admin'),
+    ('cc02bc14-8b14-4e7f-bb4a-111c2d123bd8', 'Admin'),
+    ('bc02bc14-8b14-4e7f-bb4a-111c2d123bd9', 'Admin'),
+    ('ac02bc14-8b14-4e7f-bb4a-111c2d123bda', 'Admin'),
+    ('fc02bc14-8b14-4e7f-bb4a-111c2d123bdb', 'Admin'),
+    ('bc01bc14-8b14-4e7f-bb4a-111c2d123bdc', 'Admin'),
+    ('dc02bc14-8b14-4e7f-bb4a-111c2d123bdd', 'Admin');

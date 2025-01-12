@@ -29,11 +29,12 @@ class NewsRepositoryIntegrationTest {
 
         //given
         UUID id = UUID.fromString("1e1a3208-dfc5-4eb7-8d8e-1f50f31dc70a");
+        String userName = "Admin";
         int expected = 1;
 
         //when
         Assertions.assertTrue(newsRepository.findById(id).isPresent());
-        int actual = newsRepository.deleteIfExists(id);
+        int actual = newsRepository.deleteIfExists(id, userName);
 
         //then
         Assertions.assertEquals(expected, actual);

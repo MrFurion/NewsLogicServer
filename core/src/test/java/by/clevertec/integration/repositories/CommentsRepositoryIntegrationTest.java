@@ -28,11 +28,12 @@ class CommentsRepositoryIntegrationTest {
 
         //given
         UUID id = UUID.fromString("28ab736b-3f20-4cd1-bb87-2c05e06ea4ab");
+        String username = "user123";
         int expected = 1;
 
         //when
         Assertions.assertTrue(commentsRepository.findById(id).isPresent());
-        int actual = commentsRepository.deleteIfExists(id);
+        int actual = commentsRepository.deleteIfExists(id, username);
 
         //then
         Assertions.assertEquals(expected, actual);

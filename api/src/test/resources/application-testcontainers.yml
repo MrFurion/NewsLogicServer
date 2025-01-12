@@ -4,6 +4,8 @@ spring:
   liquibase:
     enabled: true
     change-log: db/changelog/db.changelog-master-test.yml
+  security:
+    enabled: false
 
 newsapi:
   url: "http//localhost:${wiremock.server.port}"

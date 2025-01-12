@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -44,6 +45,7 @@ class CommentControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @WithMockUser(username = "Admin", roles = "ADMIN")
     @Test
     void foundCommentByIdShouldReturnComment() throws Exception {
 
@@ -58,6 +60,7 @@ class CommentControllerTest {
                 .andExpect(jsonPath("$.username").value(TestCreateData.createDataCommentsResponseSuccess().getUsername()));
     }
 
+    @WithMockUser(username = "Admin", roles = "ADMIN")
     @Test
     void createCommentShouldReturn201AndLocationHeader() throws Exception {
 
@@ -74,6 +77,7 @@ class CommentControllerTest {
                 .andExpect(content().string(org.hamcrest.Matchers.startsWith(COMMENT_CREATED_SUCCESSFULLY)));
     }
 
+    @WithMockUser(username = "sportsfan", roles = "ADMIN")
     @Test
     void updateCommentShouldReturn200AndUpdatedComment() throws Exception {
 
@@ -92,6 +96,7 @@ class CommentControllerTest {
                 .andExpect(content().json(objectMapper.writeValueAsString(expectedResponse)));
     }
 
+    @WithMockUser(username = "Admin", roles = "ADMIN")
     @Test
     void updateCommentShouldReturn404IfNotFound() throws Exception {
         //given
@@ -104,6 +109,7 @@ class CommentControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @WithMockUser(username = "sportsfan", roles = "ADMIN")
     @Test
     void deleteCommentShouldReturn204() throws Exception {
 
@@ -115,6 +121,7 @@ class CommentControllerTest {
                 .andExpect(status().isNoContent());
     }
 
+    @WithMockUser(username = "Admin", roles = "ADMIN")
     @Test
     void deleteCommentShouldReturn404IfNotFound() throws Exception {
 
@@ -125,5 +132,4 @@ class CommentControllerTest {
         mockMvc.perform(delete(COMMENTS_UUID, uuid))
                 .andExpect(status().isNotFound());
     }
-
 }

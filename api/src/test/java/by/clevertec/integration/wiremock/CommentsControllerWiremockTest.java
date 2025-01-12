@@ -33,6 +33,7 @@ import static by.clevertec.constants.TestApiConstants.CONTENT_TYPE;
 import static by.clevertec.constants.TestApiConstants.LOCALHOST_8080_COMMENTS;
 import static by.clevertec.constants.TestApiConstants.NOT_FOUND_STRING;
 import static by.clevertec.constants.TestApiConstants.SUCCESSFULLY_CREATED_THE_COMMENT;
+import static by.clevertec.util.JwtTokenUtil.buildToken;
 import static by.clevertec.util.LoaderJson.loadJsonFromFile;
 import static com.github.tomakehurst.wiremock.client.WireMock.created;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
@@ -70,7 +71,9 @@ class CommentsControllerWiremockTest {
         stubFor(get(urlPathEqualTo(COMMENTS + testIdStr))
                 .willReturn(okJson(mockResponse).withHeader(CONTENT_TYPE, APPLICATION_JSON)));
         String url = LOCALHOST_8080_COMMENTS + testIdStr;
-        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        headers.set("Authorization", "Bearer " + buildToken());
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 
         //then
         assertNotNull(response);
@@ -92,6 +95,7 @@ class CommentsControllerWiremockTest {
                         .withHeader("Location", COMMENTS)
                         .withBody(SUCCESSFULLY_CREATED_THE_COMMENT)));
 
+        headers.set("Authorization", "Bearer " + buildToken());
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> requestEntity = new HttpEntity<>(requestJson, headers);
         String createUrl = LOCALHOST_8080_COMMENTS + newsId;
@@ -108,13 +112,15 @@ class CommentsControllerWiremockTest {
         stubFor(delete(urlPathEqualTo(COMMENTS + commentId))
                 .willReturn(noContent()));
         String deleteUrl = LOCALHOST_8080_COMMENTS + commentId;
-        restTemplate.exchange(deleteUrl, HttpMethod.DELETE, null, String.class);
+        headers.set("Authorization", "Bearer " + buildToken());
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        restTemplate.exchange(deleteUrl, HttpMethod.DELETE, entity, String.class);
     }
 
     @Test
     void updateCommentTest() {
         //given
-        UUID testId = UUID.fromString("c5aadb64-1db1-4e5c-91ad-1b3c1d154af2");
+        UUID testId = UUID.fromString("1c01bc12-8b14-4e7f-bb4a-111c2d123abc");
         String randomText = "Updated Comment Text %s".formatted(UUID.randomUUID().toString());
         String randomUsername = "UpdatedUsername%s".formatted(UUID.randomUUID().toString());
 
@@ -129,6 +135,7 @@ class CommentsControllerWiremockTest {
                 .withRequestBody(equalToJson("{\"text\":\"" + randomText + "\"}"))
                 .willReturn(okJson(mockResponse).withHeader(CONTENT_TYPE, APPLICATION_JSON)));
         String url = LOCALHOST_8080_COMMENTS + testId;
+        headers.set("Authorization", "Bearer " + buildToken());
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<CommentDtoRequestUpdate> requestEntity = new HttpEntity<>(commentDtoRequestUpdate, headers);
         ResponseEntity<CommentsDtoResponse> response = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, CommentsDtoResponse.class);
@@ -149,8 +156,10 @@ class CommentsControllerWiremockTest {
         stubFor(delete(urlPathEqualTo(COMMENTS + nonExistentCommentId))
                 .willReturn(notFound()));
         String url = LOCALHOST_8080_COMMENTS + nonExistentCommentId;
+        headers.set("Authorization", "Bearer " + buildToken());
+        HttpEntity<String> entity = new HttpEntity<>(headers);
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class,
-                () -> restTemplate.exchange(url, HttpMethod.DELETE, null, String.class));
+                () -> restTemplate.exchange(url, HttpMethod.DELETE, entity, String.class));
 
         //then
         assertEquals(HttpStatus.NOT_FOUND.value(), exception.getStatusCode().value());

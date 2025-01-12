@@ -4,7 +4,7 @@ import by.clevertec.data.CreateData;
 import by.clevertec.dto.request.NewsDtoRequest;
 import by.clevertec.dto.request.NewsDtoRequestUpdate;
 import by.clevertec.dto.response.NewsDtoResponse;
-import by.clevertec.exception.NewsNotFoundException;
+import by.clevertec.exceptions.NewsNotFoundException;
 import by.clevertec.lucene.repository.NewsLuceneRepository;
 import by.clevertec.mapper.NewsMapper;
 import by.clevertec.models.Comment;
@@ -21,9 +21,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import static by.clevertec.constants.TestCoreConstants.PAGE;
@@ -32,10 +37,12 @@ import static by.clevertec.constants.TestCoreConstants.SEARCHABLE_FIELDS;
 import static by.clevertec.constants.TestCoreConstants.SEARCH_ELEMENT;
 import static by.clevertec.constants.TestCoreConstants.SORT_FIELD;
 import static by.clevertec.constants.TestCoreConstants.SORT_ORDER;
+import static by.clevertec.util.AuthenticationUsers.authenticationUsers;
 import static org.hibernate.search.util.common.impl.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -90,20 +97,22 @@ class NewsServiceImplTest {
     @Test
     void create() {
 
-        //given
+        // given
         News expectNews = CreateData.createNews();
         NewsDtoRequest newsDtoRequest = CreateData.createNewsDtoRequest();
         NewsDtoResponse expectedResponse = CreateData.createNewsDtoResponse();
 
-        //when
+        String userName = "TestUser";
+        authenticationUsers(userName);
+
+        // when
         when(newsMapper.toNews(newsDtoRequest)).thenReturn(expectNews);
         when(newsMapper.toNewsDtoResponse(expectNews)).thenReturn(expectedResponse);
-
         when(newsRepository.save(expectNews)).thenReturn(expectNews);
 
         NewsDtoResponse actualResponse = newsServiceImpl.create(newsDtoRequest);
 
-        //then
+        // then
         assertEquals(expectedResponse.getText(), actualResponse.getText());
         assertEquals(expectedResponse.getTitle(), actualResponse.getTitle());
         verify(newsRepository, times(1)).save(any());
@@ -112,22 +121,32 @@ class NewsServiceImplTest {
     @Test
     void updateWhenIdExists() {
 
-        //given
+        // given
         News expectNews = CreateData.createNews();
         News updateNews = CreateData.updateNews();
         UUID id = expectNews.getId();
         updateNews.setId(id);
         NewsDtoRequestUpdate newsDtoRequestUpdate = CreateData.updateDtoRequestNews();
         NewsDtoResponse expectResponse = CreateData.createNewsDtoResponse();
+        Set<String> userNames = new HashSet<>();
+        userNames.add("admin");
+        expectNews.setUserName(userNames);
 
-        //when
+        String userName = "admin";
+        Authentication authentication = mock(Authentication.class);
+        when(authentication.getName()).thenReturn(userName);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        // when
         when(newsRepository.findById(id)).thenReturn(Optional.of(expectNews));
         when(newsRepository.save(expectNews)).thenReturn(updateNews);
         when(newsMapper.toNewsDtoResponse(any(News.class))).thenReturn(expectResponse);
 
         NewsDtoResponse actualResponse = newsServiceImpl.update(newsDtoRequestUpdate, id);
 
-        //then
+        // then
         assertEquals(expectResponse.getTitle(), actualResponse.getTitle());
     }
 
@@ -148,32 +167,35 @@ class NewsServiceImplTest {
     @Test
     void deleteWhenIdExists() {
 
-        //given
+        // given
         UUID existingId = CreateData.createRandomUUID();
+        String userName = "Admin";
         int deleteOperationsCountExpect = 1;
+        authenticationUsers(userName);
 
-        //when
-        when(newsRepository.deleteIfExists(existingId)).thenReturn(deleteOperationsCountExpect);
-
+        // when
+        when(newsRepository.deleteIfExists(existingId, userName)).thenReturn(deleteOperationsCountExpect);
         newsServiceImpl.delete(existingId);
 
-        //then
-        verify(newsRepository).deleteIfExists(existingId);
+        // then
+        verify(newsRepository).deleteIfExists(existingId, userName);
     }
 
     @Test
     void deleteWhenIdDoesNotExist() {
 
-        //given
+        // given
         UUID nonExistentId = CreateData.createRandomUUID();
+        String userName = "Admin";
         int deleteOperationsCountExpect = 0;
+        authenticationUsers(userName);
 
-        //when
-        when(newsRepository.deleteIfExists(nonExistentId)).thenReturn(deleteOperationsCountExpect);
+        // when
+        when(newsRepository.deleteIfExists(nonExistentId, userName)).thenReturn(deleteOperationsCountExpect);
 
-        //then
+        // then
         assertThrows(NewsNotFoundException.class, () -> newsServiceImpl.delete(nonExistentId));
-        verify(newsRepository).deleteIfExists(nonExistentId);
+        verify(newsRepository).deleteIfExists(nonExistentId, userName);
     }
 
     @Test

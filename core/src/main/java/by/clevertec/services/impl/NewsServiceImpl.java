@@ -5,6 +5,7 @@ import by.clevertec.dto.request.NewsDtoRequest;
 import by.clevertec.dto.request.NewsDtoRequestUpdate;
 import by.clevertec.dto.response.NewsDtoResponse;
 import by.clevertec.exceptions.NewsNotFoundException;
+import by.clevertec.exceptions.UserNameNotFoundException;
 import by.clevertec.lucene.repository.NewsLuceneRepository;
 import by.clevertec.mapper.NewsMapper;
 import by.clevertec.models.Comment;
@@ -26,9 +27,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+
+import static by.clevertec.util.SecurityContext.getUserNameFromContext;
 
 @Service
 @Transactional(readOnly = true)
@@ -92,6 +97,10 @@ public class NewsServiceImpl implements NewsService {
     public NewsDtoResponse create(NewsDtoRequest newsDtoRequest) {
         News news = newsMapper.toNews(newsDtoRequest);
         news.setTime(Instant.now());
+        String userName = getUserNameFromContext();
+        Set<String> names = new HashSet<>();
+        names.add(userName);
+        news.setUserName(names);
         newsRepository.save(news);
         log.info("News created successfully at time: {}", news.getTime());
         return newsMapper.toNewsDtoResponse(news);
@@ -101,25 +110,30 @@ public class NewsServiceImpl implements NewsService {
     @Transactional
     @CachePut(cacheNames = CACHE_NAME_FOR_NEWS, key = "#uuid")
     public NewsDtoResponse update(NewsDtoRequestUpdate newsDtoRequestUpdate, UUID uuid) {
-        Optional<News> newsOptional = newsRepository.findById(uuid);
-        if (newsOptional.isPresent()) {
-            Optional.ofNullable(newsDtoRequestUpdate.getTitle()).ifPresent(newsOptional.get()::setTitle);
-            Optional.ofNullable(newsDtoRequestUpdate.getText()).ifPresent(newsOptional.get()::setText);
-            News newsUpdate = newsRepository.save(newsOptional.get());
-            log.info("News updated successfully with id {} at time: {}", newsUpdate.getId(),
-                    newsOptional.get().getTime());
-            return newsMapper.toNewsDtoResponse(newsOptional.get());
-        } else {
-            log.error(NEWS_NOT_FOUND, uuid);
-            throw new NewsNotFoundException();
+        News news = newsRepository.findById(uuid)
+            .orElseThrow(() -> {
+                log.error(NEWS_NOT_FOUND, uuid);
+                return new NewsNotFoundException();
+            });
+
+        Optional.ofNullable(newsDtoRequestUpdate.getTitle()).ifPresent(news::setTitle);
+        Optional.ofNullable(newsDtoRequestUpdate.getText()).ifPresent(news::setText);
+
+        if (!news.getUserName().contains(getUserNameFromContext())) {
+            throw new UserNameNotFoundException();
         }
+
+        News updatedNews = newsRepository.save(news);
+        log.info("News updated successfully with id {} at time: {}", updatedNews.getId(), news.getTime());
+        return newsMapper.toNewsDtoResponse(news);
     }
 
     @Override
     @Transactional
     @CacheEvict(cacheNames = CACHE_NAME_FOR_NEWS, key = "#uuid")
     public void delete(UUID uuid) {
-        int deletedCount = newsRepository.deleteIfExists(uuid);
+        String username = getUserNameFromContext();
+        int deletedCount = newsRepository.deleteIfExists(uuid, username);
 
         if (deletedCount == 0) {
             log.error(NEWS_NOT_FOUND, uuid);

@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
@@ -50,6 +51,8 @@ class NewsControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+
+    @WithMockUser(username = "Admin", roles = "ADMIN")
     @Test
     void foundNewsByIdShouldReturnNews() throws Exception {
 
@@ -64,6 +67,7 @@ class NewsControllerTest {
                 .andExpect(jsonPath("$.text").value(TestCreateData.createDataNewsSuccess().getText()));
     }
 
+    @WithMockUser(username = "Admin", roles = "ADMIN")
     @Test
     void findAllNewsShouldReturnPaginatedNews() throws Exception {
 
@@ -83,6 +87,7 @@ class NewsControllerTest {
                 .andExpect(jsonPath("$.size").value(SIZE));
     }
 
+    @WithMockUser(username = "Admin", roles = "ADMIN")
     @Test
     void findAllNewsWithCommentsShouldReturnPagedResults() throws Exception {
         // given
@@ -100,6 +105,7 @@ class NewsControllerTest {
                 .andExpect(jsonPath("$.size").value(SIZE));
     }
 
+    @WithMockUser(username = "Admin", roles = "ADMIN")
     @Test
     void createNewsShouldReturn201AndLocationHeader() throws Exception {
         //given
@@ -114,6 +120,7 @@ class NewsControllerTest {
                 .andExpect(content().string(org.hamcrest.Matchers.startsWith(NEWS_CREATED_SUCCESSFULLY)));
     }
 
+    @WithMockUser(username = "Admin", roles = "ADMIN")
     @Test
     void updateNewsShouldReturn200AndUpdatedNews() throws Exception {
 
@@ -141,6 +148,7 @@ class NewsControllerTest {
                 .andExpect(content().json(expectedJson.toString()));
     }
 
+    @WithMockUser(username = "Admin", roles = "ADMIN")
     @Test
     void updateNewsShouldReturn404IfNotFound() throws Exception {
         //given
@@ -153,6 +161,7 @@ class NewsControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @WithMockUser(username = "Admin", roles = "ADMIN")
     @Test
     void deleteNewsShouldReturn204() throws Exception {
 
@@ -164,6 +173,7 @@ class NewsControllerTest {
                 .andExpect(status().isNoContent());
     }
 
+    @WithMockUser(username = "Admin", roles = "ADMIN")
     @Test
     void deleteNewsShouldReturn404IfNotFound() throws Exception {
 
